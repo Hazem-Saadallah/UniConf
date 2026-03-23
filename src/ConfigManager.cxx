@@ -1,4 +1,3 @@
-#include <memory>
 #include <ConfigManager.hxx>
 
 ConfigManager::Config ConfigManager::Create(const std::string& file_path, ConfigManager::FileType file_type) {

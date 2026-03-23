@@ -1,5 +1,7 @@
 #pragma once 
 
+#include <string>
+#include <vector>
 #include <memory>
 #include <TomlManager.hxx>
 #include <BaseManager.hxx>
@@ -15,6 +17,7 @@ namespace ConfigManager {
 
   typedef std::unique_ptr<IBaseManager> Config;
   typedef std::unique_ptr<ITomlManager> TomlConfig;
+  typedef std::vector<std::string> PathType;
 
   Config Create(const std::string& file_path, FileType file_type);
 
