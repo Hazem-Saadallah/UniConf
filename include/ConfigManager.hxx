@@ -1,7 +1,7 @@
 #pragma once 
 
-#include "TomlManager.hxx"
 #include <memory>
+#include <TomlManager.hxx>
 #include <BaseManager.hxx>
 
 namespace ConfigManager {

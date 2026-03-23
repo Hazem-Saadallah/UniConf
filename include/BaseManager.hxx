@@ -24,7 +24,6 @@ public:
   bool is_initalized();
   std::string get_config_path();
 
-protected:
   virtual void load(const std::string& file_path) = 0;
   virtual void save(std::optional<std::string> file_path) = 0;
   virtual void refresh() = 0;
