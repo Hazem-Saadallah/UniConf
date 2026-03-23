@@ -1,0 +1,24 @@
+#pragma once
+
+#include <memory>
+#include <toml++/toml.hpp>
+
+class ITomlManager {
+private:
+  static std::string m_ConfigPath;
+  static std::shared_ptr<toml::parse_result> m_Instance;
+
+public:
+  static bool init(const std::string &config_path);
+  static std::shared_ptr<toml::table> get();
+  static void save();
+  static bool status();
+  static void refresh();
+
+  ITomlManager() = delete;
+  ~ITomlManager() = default;
+  ITomlManager(ITomlManager &&) noexcept = delete;
+  ITomlManager &operator=(ITomlManager &&) noexcept = delete;
+  ITomlManager(const ITomlManager &) = delete;
+  ITomlManager &operator=(const ITomlManager &) = delete;
+};

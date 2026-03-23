@@ -1,0 +1,32 @@
+#include <memory>
+#include <filesystem>
+#include <toml++/toml.hpp>
+#include <TomlManager.hxx>
+
+bool ITomlManager::init(const std::string &config_path) {
+  if(m_Instance || !std::filesystem::exists(config_path)) return false;
+  m_ConfigPath = config_path;
+  m_Instance = std::make_shared<toml::parse_result>(toml::parse_file(config_path));
+  return status();
+}
+
+std::shared_ptr<toml::table> ITomlManager::get() {
+  if (!m_Instance) throw std::runtime_error("[ERROR] Config not initialized\n");
+  return m_Instance;
+}
+
+void ITomlManager::save() {
+  std::ofstream output_file(m_ConfigPath);
+  output_file << *m_Instance;
+}
+
+bool ITomlManager::status() {
+  return m_Instance && static_cast<bool>(m_Instance);
+}
+
+void ITomlManager::refresh() {
+  m_Instance = std::make_shared<toml::parse_result>(toml::parse_file(m_ConfigPath));
+}
+
+std::string ITomlManager::m_ConfigPath;
+std::shared_ptr<toml::parse_result> ITomlManager::m_Instance;
