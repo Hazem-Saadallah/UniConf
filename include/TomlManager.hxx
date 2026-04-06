@@ -8,18 +8,19 @@
 #include <BaseManager.hxx>
 #include <TomlManager.hxx>
 
-class ITomlManager : public IBaseManager {
+namespace Impl {
+class TomlManager : public Impl::BaseManager {
 private:
   toml::table m_Table;
 
 public:
-  ITomlManager() = default;
-  ITomlManager(const std::string& file_path);
-  ~ITomlManager() = default;
-  ITomlManager(ITomlManager &&) noexcept = delete;
-  ITomlManager &operator=(ITomlManager &&) noexcept = delete;
-  ITomlManager(const ITomlManager &) = delete;
-  ITomlManager &operator=(const ITomlManager &) = delete;
+  TomlManager() = default;
+  TomlManager(const std::string& file_path);
+  ~TomlManager() = default;
+  TomlManager(TomlManager &&) noexcept = delete;
+  TomlManager &operator=(TomlManager &&) noexcept = delete;
+  TomlManager(const TomlManager &) = delete;
+  TomlManager &operator=(const TomlManager &) = delete;
 
   void load(const std::string& file_path) override;
   void save(std::optional<std::string> file_path=std::nullopt) override;
@@ -43,24 +44,46 @@ public:
   };
 
   template<typename T> inline std::optional<T> get_as(const std::vector<std::string>& path, const std::string& key) const {
-    const toml::table *current = &m_Table;
-    for(std::size_t i{0}; i < path.size(); ++i) {
-      const std::string& path_part = path[i];
-      const toml::node* next_node = current->get(path_part);
-      if(!next_node || !next_node->is_table()) return std::nullopt;
-      current = next_node->as_table();
-    }
-    if(!current->get(key)) return std::nullopt;
-    return current->get(key)->value<T>();
+    std::vector<std::string> vec = path;
+    vec.push_back(key);
+    return get_as<T>(vec);
   };
 
   std::optional<std::string> get_string(const std::string& full_path) const override;
   std::optional<std::string> get_string(const std::vector<std::string>& full_path) const override;
   std::optional<std::string> get_string(const std::vector<std::string>& path, const std::string& key) const override;
 
+  std::optional<std::int8_t> get_int8(const std::string& full_path) const override;
+  std::optional<std::int8_t> get_int8(const std::vector<std::string>& full_path) const override;
+  std::optional<std::int8_t> get_int8(const std::vector<std::string>& path, const std::string& key) const override;
+  std::optional<std::uint8_t> get_uint8(const std::string& full_path) const override;
+  std::optional<std::uint8_t> get_uint8(const std::vector<std::string>& full_path) const override;
+  std::optional<std::uint8_t> get_uint8(const std::vector<std::string>& path, const std::string& key) const override;
+
+  std::optional<std::int16_t> get_int16(const std::string& full_path) const override;
+  std::optional<std::int16_t> get_int16(const std::vector<std::string>& full_path) const override;
+  std::optional<std::int16_t> get_int16(const std::vector<std::string>& path, const std::string& key) const override;
+  std::optional<std::uint16_t> get_uint16(const std::string& full_path) const override;
+  std::optional<std::uint16_t> get_uint16(const std::vector<std::string>& full_path) const override;
+  std::optional<std::uint16_t> get_uint16(const std::vector<std::string>& path, const std::string& key) const override;
+
+  std::optional<std::int32_t> get_int32(const std::string& full_path) const override;
+  std::optional<std::int32_t> get_int32(const std::vector<std::string>& full_path) const override;
+  std::optional<std::int32_t> get_int32(const std::vector<std::string>& path, const std::string& key) const override;
+  std::optional<std::uint32_t> get_uint32(const std::string& full_path) const override;
+  std::optional<std::uint32_t> get_uint32(const std::vector<std::string>& full_path) const override;
+  std::optional<std::uint32_t> get_uint32(const std::vector<std::string>& path, const std::string& key) const override;
+
   std::optional<std::int64_t> get_int64(const std::string& full_path) const override;
   std::optional<std::int64_t> get_int64(const std::vector<std::string>& full_path) const override;
   std::optional<std::int64_t> get_int64(const std::vector<std::string>& path, const std::string& key) const override;
+  std::optional<std::uint64_t> get_uint64(const std::string& full_path) const override;
+  std::optional<std::uint64_t> get_uint64(const std::vector<std::string>& full_path) const override;
+  std::optional<std::uint64_t> get_uint64(const std::vector<std::string>& path, const std::string& key) const override;
+
+  std::optional<std::float_t> get_float32(const std::string& full_path) const override;
+  std::optional<std::float_t> get_float32(const std::vector<std::string>& full_path) const override;
+  std::optional<std::float_t> get_float32(const std::vector<std::string>& path, const std::string& key) const override;
 
   std::optional<std::double_t> get_float64(const std::string& full_path) const override;
   std::optional<std::double_t> get_float64(const std::vector<std::string>& full_path) const override;
@@ -92,12 +115,29 @@ public:
   void create_table(const std::vector<std::string>& path) override;
 
   void set_string(const std::vector<std::string>& path, const std::string& key, const std::string& value) override;
+  void set_int8(const std::vector<std::string>& path, const std::string& key, std::int8_t value) override;
+  void set_uint8(const std::vector<std::string>& path, const std::string& key, std::uint8_t value) override;
+  void set_int16(const std::vector<std::string>& path, const std::string& key, std::int16_t value) override;
+  void set_uint16(const std::vector<std::string>& path, const std::string& key, std::uint16_t value) override;
+  void set_int32(const std::vector<std::string>& path, const std::string& key, std::int32_t value) override;
+  void set_uint32(const std::vector<std::string>& path, const std::string& key, std::uint32_t value) override;
   void set_int64(const std::vector<std::string>& path, const std::string& key, std::int64_t value) override;
+  void set_uint64(const std::vector<std::string>& path, const std::string& key, std::uint64_t value) override;
+  void set_float32(const std::vector<std::string>& path, const std::string& key, std::float_t value) override;
   void set_float64(const std::vector<std::string>& path, const std::string& key, std::double_t value) override;
   void set_bool(const std::vector<std::string>& path, const std::string& key, bool value) override;
 
   void set_or_create_string(const std::vector<std::string>& path, const std::string& key, const std::string& value) override;
+  void set_or_create_int8(const std::vector<std::string>& path, const std::string& key, std::int8_t value) override;
+  void set_or_create_uint8(const std::vector<std::string>& path, const std::string& key, std::uint8_t value) override;
+  void set_or_create_int16(const std::vector<std::string>& path, const std::string& key, std::int16_t value) override;
+  void set_or_create_uint16(const std::vector<std::string>& path, const std::string& key, std::uint16_t value) override;
+  void set_or_create_int32(const std::vector<std::string>& path, const std::string& key, std::int32_t value) override;
+  void set_or_create_uint32(const std::vector<std::string>& path, const std::string& key, std::uint32_t value) override;
   void set_or_create_int64(const std::vector<std::string>& path, const std::string& key, std::int64_t value) override;
+  void set_or_create_uint64(const std::vector<std::string>& path, const std::string& key, std::uint64_t value) override;
+  void set_or_create_float32(const std::vector<std::string>& path, const std::string& key, std::float_t value) override;
   void set_or_create_float64(const std::vector<std::string>& path, const std::string& key, std::double_t value) override;
   void set_or_create_bool(const std::vector<std::string>& path, const std::string& key, bool value) override;
 };
+}

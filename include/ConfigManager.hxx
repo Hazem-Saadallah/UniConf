@@ -1,27 +1,22 @@
 #pragma once 
 
+#include <concepts>
 #include <string>
 #include <vector>
 #include <memory>
+#include <datatypes.hxx>
 #include <TomlManager.hxx>
 #include <BaseManager.hxx>
 
 namespace ConfigManager {
-  enum class FileType {
-    TOML=0,
-    YAML,
-    YML,
-    JSON,
-    GDBM
-  };
+  typedef Impl::Datatype::Config Config;
+  typedef Impl::Datatype::TomlConfig TomlConfig;
+  typedef Impl::Datatype::PathType PathType;
+  typedef Impl::Datatype::FileType FileType;
 
-  typedef std::unique_ptr<IBaseManager> Config;
-  typedef std::unique_ptr<ITomlManager> TomlConfig;
-  typedef std::vector<std::string> PathType;
+  Impl::Datatype::Config Create(const std::string& file_path, Impl::Datatype::FileType file_type);
 
-  Config Create(const std::string& file_path, FileType file_type);
-
-  template<typename... T> inline TomlConfig CreateTomlConfig(T&&... args) {
-    return std::make_unique<ITomlManager>(std::forward<T>(args)...);
+  template<typename... T> inline Impl::Datatype::TomlConfig CreateTomlConfig(T&&... args) {
+    return std::make_unique<Impl::TomlManager>(std::forward<T>(args)...);
   }
 };

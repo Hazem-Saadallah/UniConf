@@ -1,22 +1,25 @@
 #include <ConfigManager.hxx>
 
-ConfigManager::Config ConfigManager::Create(const std::string& file_path, ConfigManager::FileType file_type) {
+Impl::Datatype::Config ConfigManager::Create(const std::string& file_path, Impl::Datatype::FileType file_type) {
   switch (file_type) {
-    case ConfigManager::FileType::TOML:
+    case Impl::Datatype::FileType::TOML:
       return ConfigManager::CreateTomlConfig(file_path);
       break;
 
-    case ConfigManager::FileType::YAML: [[fallthrough]];
-    case ConfigManager::FileType::YML:
+    case Impl::Datatype::FileType::YAML: [[fallthrough]];
+    case Impl::Datatype::FileType::YML:
       [[fallthrough]];
 
-    case ConfigManager::FileType::JSON:
+    case Impl::Datatype::FileType::JSON:
       [[fallthrough]];
 
-    case ConfigManager::FileType::GDBM:
+    case Impl::Datatype::FileType::XML:
+      [[fallthrough]];
+
+    case Impl::Datatype::FileType::GDBM:
       throw "NOT IMPLEMENTED YET";
 
     default:
-      return ConfigManager::Config();
+      return Impl::Datatype::Config();
   }
 }
