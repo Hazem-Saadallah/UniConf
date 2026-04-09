@@ -1,9 +1,9 @@
-#include <ConfigManager.hxx>
+#include <UniConf.hxx>
 
-Impl::Datatype::Config ConfigManager::Create(const std::string& file_path, Impl::Datatype::FileType file_type) {
+Impl::Datatype::Config UniConf::Create(const std::string& file_path, Impl::Datatype::FileType file_type) {
   switch (file_type) {
     case Impl::Datatype::FileType::TOML:
-      return ConfigManager::CreateTomlConfig(file_path);
+      return UniConf::CreateTomlConfig(file_path);
       break;
 
     case Impl::Datatype::FileType::YAML: [[fallthrough]];

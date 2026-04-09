@@ -8,7 +8,7 @@
 #include <TomlManager.hxx>
 #include <BaseManager.hxx>
 
-namespace ConfigManager {
+namespace UniConf {
   typedef Impl::Datatype::Config Config;
   typedef Impl::Datatype::TomlConfig TomlConfig;
   typedef Impl::Datatype::PathType PathType;

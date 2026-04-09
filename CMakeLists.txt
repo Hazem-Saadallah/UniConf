@@ -1,6 +1,6 @@
 include(FetchContent)
 CMAKE_MINIMUM_REQUIRED(VERSION 3.31)
-project(ConfigManager LANGUAGES C CXX)
+project(UniConf LANGUAGES C CXX)
 
 option(BUILD_TESTS "Build the main.cxx test executable" OFF)
 
@@ -13,7 +13,7 @@ set(COMMON_COMPILE_OPTIONS -Wall -Wextra)
 set(SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/src/BaseManager.cxx
   ${CMAKE_CURRENT_SOURCE_DIR}/src/TomlManager.cxx
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/ConfigManager.cxx
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/UniConf.cxx
 )
 set(COMMON_LIBS
   tomlplusplus::tomlplusplus
