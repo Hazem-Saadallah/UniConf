@@ -1,4 +1,4 @@
-#include <BaseManager.hxx>
+#include <UniConf/Impl/BaseManager.hxx>
 
 UniConf::Impl::BaseManager::BaseManager(const std::string& file_path) : m_ConfigPath(file_path) {}
 

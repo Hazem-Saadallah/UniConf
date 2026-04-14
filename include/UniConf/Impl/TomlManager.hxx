@@ -5,8 +5,8 @@
 #include <utility>
 #include <vector>
 #include <toml++/toml.hpp>
-#include <BaseManager.hxx>
-#include <TomlManager.hxx>
+#include <UniConf/Impl/BaseManager.hxx>
+#include <UniConf/Impl/TomlManager.hxx>
 
 namespace UniConf {
   namespace Impl {

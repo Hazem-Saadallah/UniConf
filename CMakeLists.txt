@@ -11,8 +11,8 @@ set(BIN_NAME bin.out)
 set(COMMON_COMPILE_OPTIONS -Wall -Wextra)
 
 set(SOURCES
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/BaseManager.cxx
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/TomlManager.cxx
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/UniConf/Impl/BaseManager.cxx
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/UniConf/Impl/TomlManager.cxx
   ${CMAKE_CURRENT_SOURCE_DIR}/src/UniConf.cxx
 )
 set(COMMON_LIBS

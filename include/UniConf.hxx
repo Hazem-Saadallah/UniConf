@@ -4,19 +4,19 @@
 #include <string>
 #include <vector>
 #include <memory>
-#include <datatypes.hxx>
-#include <TomlManager.hxx>
-#include <BaseManager.hxx>
+#include <UniConf/Impl/datatypes.hxx>
+#include <UniConf/Impl/TomlManager.hxx>
+#include <UniConf/Impl/BaseManager.hxx>
 
 namespace UniConf {
-  typedef Impl::Datatype::Config Config;
-  typedef Impl::Datatype::TomlConfig TomlConfig;
-  typedef Impl::Datatype::PathType PathType;
-  typedef Impl::Datatype::FileType FileType;
+  typedef UniConf::Impl::Datatype::Config Config;
+  typedef UniConf::Impl::Datatype::TomlConfig TomlConfig;
+  typedef UniConf::Impl::Datatype::PathType PathType;
+  typedef UniConf::Impl::Datatype::FileType FileType;
 
-  Impl::Datatype::Config Create(const std::string& file_path, Impl::Datatype::FileType file_type);
+  UniConf::Impl::Datatype::Config Create(const std::string& file_path, UniConf::Impl::Datatype::FileType file_type);
 
-  template<typename... T> inline Impl::Datatype::TomlConfig CreateTomlConfig(T&&... args) {
-    return std::make_unique<Impl::TomlManager>(std::forward<T>(args)...);
+  template<typename... T> inline UniConf::Impl::Datatype::TomlConfig CreateTomlConfig(T&&... args) {
+    return std::make_unique<UniConf::Impl::TomlManager>(std::forward<T>(args)...);
   }
 };

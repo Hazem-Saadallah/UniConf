@@ -2,8 +2,8 @@
 #include <optional>
 #include <filesystem>
 #include <toml++/toml.hpp>
-#include <BaseManager.hxx>
-#include <TomlManager.hxx>
+#include <UniConf/Impl/BaseManager.hxx>
+#include <UniConf/Impl/TomlManager.hxx>
 
 
 UniConf::Impl::TomlManager::TomlManager(const std::string& file_path) : BaseManager(file_path) {

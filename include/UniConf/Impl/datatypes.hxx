@@ -1,8 +1,8 @@
 #pragma once
 
 #include <memory>
-#include <BaseManager.hxx>
-#include <TomlManager.hxx>
+#include <UniConf/Impl/BaseManager.hxx>
+#include <UniConf/Impl/TomlManager.hxx>
 
 namespace UniConf {
   namespace Impl {
