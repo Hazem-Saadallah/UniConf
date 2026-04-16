@@ -15,7 +15,8 @@ UniConf::Impl::Datatype::Config UniConf::Create(const std::string& file_path, Im
       [[fallthrough]];
 
     case UniConf::Impl::Datatype::FileType::XML:
-      [[fallthrough]];
+      return UniConf::CreateXMLConfig(file_path);
+      break;
 
     case UniConf::Impl::Datatype::FileType::GDBM:
       throw "NOT IMPLEMENTED YET";

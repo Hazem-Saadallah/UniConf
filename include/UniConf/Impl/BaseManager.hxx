@@ -22,54 +22,45 @@ namespace UniConf {
       BaseManager(const BaseManager &) = delete;
       BaseManager &operator=(const BaseManager &) = delete;
 
-    public:
-      bool is_initalized();
-      std::string get_config_path();
+    protected:
+      virtual void load_parser() = 0;
 
-      virtual void load(const std::string& file_path) = 0;
+    public:
+      bool is_initalized() const;
+      std::string get_config_path() const;
+
+      void load(const std::string& file_path);
+      void refresh();
       virtual void save(std::optional<std::string> file_path=std::nullopt) = 0;
-      virtual void refresh() = 0;
       
-      virtual std::optional<std::string> get_string(const std::string& full_path) const = 0;
       virtual std::optional<std::string> get_string(const std::vector<std::string>& full_path) const = 0;
       virtual std::optional<std::string> get_string(const std::vector<std::string>& path, const std::string& key) const = 0;
 
-      virtual std::optional<std::int8_t> get_int8(const std::string& full_path) const = 0;
       virtual std::optional<std::int8_t> get_int8(const std::vector<std::string>& full_path) const = 0;
       virtual std::optional<std::int8_t> get_int8(const std::vector<std::string>& path, const std::string& key) const = 0;
-      virtual std::optional<std::uint8_t> get_uint8(const std::string& full_path) const = 0;
       virtual std::optional<std::uint8_t> get_uint8(const std::vector<std::string>& full_path) const = 0;
       virtual std::optional<std::uint8_t> get_uint8(const std::vector<std::string>& path, const std::string& key) const = 0;
 
-      virtual std::optional<std::int16_t> get_int16(const std::string& full_path) const = 0;
       virtual std::optional<std::int16_t> get_int16(const std::vector<std::string>& full_path) const = 0;
       virtual std::optional<std::int16_t> get_int16(const std::vector<std::string>& path, const std::string& key) const = 0;
-      virtual std::optional<std::uint16_t> get_uint16(const std::string& full_path) const = 0;
       virtual std::optional<std::uint16_t> get_uint16(const std::vector<std::string>& full_path) const = 0;
       virtual std::optional<std::uint16_t> get_uint16(const std::vector<std::string>& path, const std::string& key) const = 0;
 
-      virtual std::optional<std::int32_t> get_int32(const std::string& full_path) const = 0;
       virtual std::optional<std::int32_t> get_int32(const std::vector<std::string>& full_path) const = 0;
       virtual std::optional<std::int32_t> get_int32(const std::vector<std::string>& path, const std::string& key) const = 0;
-      virtual std::optional<std::uint32_t> get_uint32(const std::string& full_path) const = 0;
       virtual std::optional<std::uint32_t> get_uint32(const std::vector<std::string>& full_path) const = 0;
       virtual std::optional<std::uint32_t> get_uint32(const std::vector<std::string>& path, const std::string& key) const = 0;
 
-      virtual std::optional<std::int64_t> get_int64(const std::string& full_path) const = 0;
       virtual std::optional<std::int64_t> get_int64(const std::vector<std::string>& full_path) const = 0;
       virtual std::optional<std::int64_t> get_int64(const std::vector<std::string>& path, const std::string& key) const = 0;
-      virtual std::optional<std::uint64_t> get_uint64(const std::string& full_path) const = 0;
       virtual std::optional<std::uint64_t> get_uint64(const std::vector<std::string>& full_path) const = 0;
       virtual std::optional<std::uint64_t> get_uint64(const std::vector<std::string>& path, const std::string& key) const = 0;
 
-      virtual std::optional<std::float_t> get_float32(const std::string& full_path) const = 0;
       virtual std::optional<std::float_t> get_float32(const std::vector<std::string>& full_path) const = 0;
       virtual std::optional<std::float_t> get_float32(const std::vector<std::string>& path, const std::string& key) const = 0;
-      virtual std::optional<std::double_t> get_float64(const std::string& full_path) const = 0;
       virtual std::optional<std::double_t> get_float64(const std::vector<std::string>& full_path) const = 0;
       virtual std::optional<std::double_t> get_float64(const std::vector<std::string>& path, const std::string& key) const = 0;
 
-      virtual std::optional<bool> get_bool(const std::string& full_path) const = 0;
       virtual std::optional<bool> get_bool(const std::vector<std::string>& full_path) const = 0;
       virtual std::optional<bool> get_bool(const std::vector<std::string>& path, const std::string& key) const = 0;
 

@@ -13,10 +13,13 @@ set(COMMON_COMPILE_OPTIONS -Wall -Wextra)
 set(SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/src/UniConf/Impl/BaseManager.cxx
   ${CMAKE_CURRENT_SOURCE_DIR}/src/UniConf/Impl/TomlManager.cxx
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/UniConf/Impl/XMLManager.cxx
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/UniConf/Impl/Util/Misc.cxx
   ${CMAKE_CURRENT_SOURCE_DIR}/src/UniConf.cxx
 )
 set(COMMON_LIBS
   tomlplusplus::tomlplusplus
+  pugixml
 )
 
 set(COMMON_INCLUDE_DIRS
@@ -31,7 +34,15 @@ FetchContent_Declare(
   BINARY_DIR ${CMAKE_BINARY_DIR}/extern/tomlplusplus
 )
 
+FetchContent_Declare(
+  pugixml
+  URL https://github.com/zeux/pugixml/releases/download/v1.15/pugixml-1.15.tar.gz
+  DOWNLOAD_EXTRACT_TIMESTAMP true
+  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/extern/pugixml
+  BINARY_DIR ${CMAKE_BINARY_DIR}/extern/pugixml
+)
 FetchContent_MakeAvailable(tomlplusplus)
+FetchContent_MakeAvailable(pugixml)
 
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${COMMON_INCLUDE_DIRS})

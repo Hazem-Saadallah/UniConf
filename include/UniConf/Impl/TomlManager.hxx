@@ -10,7 +10,7 @@
 
 namespace UniConf {
   namespace Impl {
-  class TomlManager : public Impl::BaseManager {
+  class TomlManager : public UniConf::Impl::BaseManager {
   private:
     toml::table m_Table;
 
@@ -18,18 +18,13 @@ namespace UniConf {
     TomlManager() = default;
     TomlManager(const std::string& file_path);
     ~TomlManager() = default;
-    TomlManager(TomlManager &&) noexcept = delete;
-    TomlManager &operator=(TomlManager &&) noexcept = delete;
-    TomlManager(const TomlManager &) = delete;
-    TomlManager &operator=(const TomlManager &) = delete;
+    TomlManager(TomlManager&& other) noexcept = delete;
+    TomlManager &operator=(TomlManager&& other) noexcept = delete;
+    TomlManager(const TomlManager& other) = delete;
+    TomlManager &operator=(const TomlManager& other) = delete;
 
-    void load(const std::string& file_path) override;
+    void load_parser() override;
     void save(std::optional<std::string> file_path=std::nullopt) override;
-    void refresh() override; 
-
-    template<typename T> inline std::optional<T> get_as(const std::string& full_path) const {
-      return m_Table.at_path(full_path).value<T>();
-    };
 
     template<typename T> inline std::optional<T> get_as(const std::vector<std::string>& full_path) const {
       if(full_path.empty()) return std::nullopt;
@@ -50,47 +45,35 @@ namespace UniConf {
       return get_as<T>(vec);
     };
 
-    std::optional<std::string> get_string(const std::string& full_path) const override;
     std::optional<std::string> get_string(const std::vector<std::string>& full_path) const override;
     std::optional<std::string> get_string(const std::vector<std::string>& path, const std::string& key) const override;
 
-    std::optional<std::int8_t> get_int8(const std::string& full_path) const override;
     std::optional<std::int8_t> get_int8(const std::vector<std::string>& full_path) const override;
     std::optional<std::int8_t> get_int8(const std::vector<std::string>& path, const std::string& key) const override;
-    std::optional<std::uint8_t> get_uint8(const std::string& full_path) const override;
     std::optional<std::uint8_t> get_uint8(const std::vector<std::string>& full_path) const override;
     std::optional<std::uint8_t> get_uint8(const std::vector<std::string>& path, const std::string& key) const override;
 
-    std::optional<std::int16_t> get_int16(const std::string& full_path) const override;
     std::optional<std::int16_t> get_int16(const std::vector<std::string>& full_path) const override;
     std::optional<std::int16_t> get_int16(const std::vector<std::string>& path, const std::string& key) const override;
-    std::optional<std::uint16_t> get_uint16(const std::string& full_path) const override;
     std::optional<std::uint16_t> get_uint16(const std::vector<std::string>& full_path) const override;
     std::optional<std::uint16_t> get_uint16(const std::vector<std::string>& path, const std::string& key) const override;
 
-    std::optional<std::int32_t> get_int32(const std::string& full_path) const override;
     std::optional<std::int32_t> get_int32(const std::vector<std::string>& full_path) const override;
     std::optional<std::int32_t> get_int32(const std::vector<std::string>& path, const std::string& key) const override;
-    std::optional<std::uint32_t> get_uint32(const std::string& full_path) const override;
     std::optional<std::uint32_t> get_uint32(const std::vector<std::string>& full_path) const override;
     std::optional<std::uint32_t> get_uint32(const std::vector<std::string>& path, const std::string& key) const override;
 
-    std::optional<std::int64_t> get_int64(const std::string& full_path) const override;
     std::optional<std::int64_t> get_int64(const std::vector<std::string>& full_path) const override;
     std::optional<std::int64_t> get_int64(const std::vector<std::string>& path, const std::string& key) const override;
-    std::optional<std::uint64_t> get_uint64(const std::string& full_path) const override;
     std::optional<std::uint64_t> get_uint64(const std::vector<std::string>& full_path) const override;
     std::optional<std::uint64_t> get_uint64(const std::vector<std::string>& path, const std::string& key) const override;
 
-    std::optional<std::float_t> get_float32(const std::string& full_path) const override;
     std::optional<std::float_t> get_float32(const std::vector<std::string>& full_path) const override;
     std::optional<std::float_t> get_float32(const std::vector<std::string>& path, const std::string& key) const override;
 
-    std::optional<std::double_t> get_float64(const std::string& full_path) const override;
     std::optional<std::double_t> get_float64(const std::vector<std::string>& full_path) const override;
     std::optional<std::double_t> get_float64(const std::vector<std::string>& path, const std::string& key) const override;
 
-    std::optional<bool> get_bool(const std::string& full_path) const override;
     std::optional<bool> get_bool(const std::vector<std::string>& full_path) const override;
     std::optional<bool> get_bool(const std::vector<std::string>& path, const std::string& key) const override;
 
