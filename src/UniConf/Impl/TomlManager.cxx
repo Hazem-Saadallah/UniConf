@@ -1,5 +1,7 @@
+#include <mutex>
 #include <fstream>
 #include <optional>
+#include <shared_mutex>
 #include <toml++/toml.hpp>
 #include <UniConf/Impl/BaseManager.hxx>
 #include <UniConf/Impl/TomlManager.hxx>
@@ -47,6 +49,7 @@ std::optional<bool> UniConf::Impl::TomlManager::get_bool(const std::vector<std::
 std::optional<bool> UniConf::Impl::TomlManager::get_bool(const std::vector<std::string>& path, const std::string& key) const { return get_as<bool>(path, key); }
 
 bool UniConf::Impl::TomlManager::path_exists(const std::vector<std::string>& path) const {
+  std::unique_lock<std::shared_mutex> lock(m_RWMutex);
   if(path.empty()) return false;
   const toml::table *current = &m_Table;
   for(std::size_t i{0}; i < path.size(); ++i) {

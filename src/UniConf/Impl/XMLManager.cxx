@@ -1,4 +1,6 @@
 #include <format>
+#include <mutex>
+#include <shared_mutex>
 #include <string>
 #include <optional>
 #include <UniConf/Impl/Util/Misc.hxx>
@@ -15,6 +17,7 @@ void UniConf::Impl::XMLManager::load_parser() {
 }
 
 void UniConf::Impl::XMLManager::save(std::optional<std::string> file_path) {
+  std::unique_lock<std::shared_mutex> lock(m_RWMutex);
   m_Document.save_file(file_path.value_or(std::format("./{}", Util::Misc::generate_random_string(5, "UniConf_XML_", ".xml"))).c_str());
 }
 
@@ -32,9 +35,7 @@ std::optional<pugi::xml_node> UniConf::Impl::XMLManager::navigate_parents(std::s
   return current;
 }
 
-std::optional<std::string> UniConf::Impl::XMLManager::get_string(const std::vector<std::string>& full_path) const {
-  return get_as<std::string>(full_path);
-}
+std::optional<std::string> UniConf::Impl::XMLManager::get_string(const std::vector<std::string>& full_path) const { return get_as<std::string>(full_path); }
 std::optional<std::string> UniConf::Impl::XMLManager::get_string(const std::vector<std::string>& path, const std::string& key) const { return get_as<std::string>(path, key); }
 
 std::optional<std::int8_t> UniConf::Impl::XMLManager::get_int8(const std::vector<std::string>& full_path) const { return get_as<std::int8_t>(full_path); }

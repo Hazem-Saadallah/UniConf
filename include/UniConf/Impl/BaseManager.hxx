@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cmath>
+#include <shared_mutex>
 #include <string>
 #include <vector>
 #include <cstdint>
@@ -12,6 +13,7 @@ namespace UniConf {
     protected:
       std::string m_ConfigPath{""};
       bool m_Initalized{false};
+      mutable std::shared_mutex m_RWMutex;
 
     public:
       BaseManager() = default;

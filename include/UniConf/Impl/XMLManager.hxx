@@ -1,5 +1,7 @@
 #pragma once
 
+#include <mutex>
+#include <shared_mutex>
 #include <span>
 #include <string>
 #include <vector>
@@ -51,14 +53,16 @@ namespace UniConf {
       void save(std::optional<std::string> file_path=std::nullopt) override;
 
       template <typename T> std::optional<T> get_as(const std::vector<std::string>& full_path) const {
+        std::shared_lock<std::shared_mutex> lock(m_RWMutex);
         if(full_path.empty()) return std::nullopt;
         return get_as<T>(std::vector<std::string>(full_path.begin(), full_path.end()-1), full_path.back());
       }
 
       template <typename T> std::optional<T> get_as(const std::vector<std::string>& path, const std::string& key) const {
+        std::shared_lock<std::shared_mutex> lock(m_RWMutex);
         if(key.empty()) return std::nullopt;
         std::optional<pugi::xml_node> parent = navigate_parents(path, false);
-        if(!parent) return std::nullopt; /* BUG: HERE */
+        if(!parent) return std::nullopt;
         pugi::xpath_node target = parent->select_node(key.c_str());
         if(target.attribute()) return extract_value<T, pugi::xml_attribute>(target.attribute());
         else if (target.node()) return extract_value<T, pugi::xml_text>(target.node().text());
@@ -100,6 +104,7 @@ namespace UniConf {
       void create_table(const std::vector<std::string>& path) override;
 
       template<typename T> void set_as(const std::vector<std::string>& path, const std::string& key, const T& value) {
+        std::unique_lock<std::shared_mutex> lock(m_RWMutex);
         if(key.empty()) return;
 
         std::optional<pugi::xml_node> node = navigate_parents(path, false);
@@ -134,6 +139,7 @@ namespace UniConf {
       void set_bool(const std::vector<std::string>& path, const std::string& key, bool value) override;
 
       template<typename T> void set_or_create_as(const std::vector<std::string>& path, const std::string& key, const T& value) {
+        std::unique_lock<std::shared_mutex> lock(m_RWMutex);
         if(key.empty()) return;
 
         std::optional<pugi::xml_node> node = navigate_parents(path, true);

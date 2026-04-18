@@ -1,9 +1,11 @@
 #pragma once
 
-#include <cstddef>
+#include <mutex>
 #include <string>
+#include <cstddef>
 #include <utility>
 #include <vector>
+#include <shared_mutex>
 #include <toml++/toml.hpp>
 #include <UniConf/Impl/BaseManager.hxx>
 #include <UniConf/Impl/TomlManager.hxx>
@@ -27,6 +29,7 @@ namespace UniConf {
     void save(std::optional<std::string> file_path=std::nullopt) override;
 
     template<typename T> inline std::optional<T> get_as(const std::vector<std::string>& full_path) const {
+      std::shared_lock<std::shared_mutex> lock(m_RWMutex);
       if(full_path.empty()) return std::nullopt;
       const toml::table *current = &m_Table;
       for(std::size_t i{0}; i < full_path.size()-1; ++i) {
@@ -40,6 +43,7 @@ namespace UniConf {
     };
 
     template<typename T> inline std::optional<T> get_as(const std::vector<std::string>& path, const std::string& key) const {
+      std::shared_lock<std::shared_mutex> lock(m_RWMutex);
       std::vector<std::string> vec = path;
       vec.push_back(key);
       return get_as<T>(vec);
@@ -78,6 +82,7 @@ namespace UniConf {
     std::optional<bool> get_bool(const std::vector<std::string>& path, const std::string& key) const override;
 
     template <typename T> inline void set_as(const std::vector<std::string>& path, const std::string& key, T value) {
+      std::unique_lock<std::shared_mutex> lock(m_RWMutex);
       toml::table *current = &m_Table;
       for(std::size_t i{0}; i < path.size(); ++i) {
         const std::string& path_part = path[i];
@@ -89,6 +94,7 @@ namespace UniConf {
     }
 
     template <typename T> inline void set_or_create_as(const std::vector<std::string>& path, const std::string& key, T value) {
+      std::unique_lock<std::shared_mutex> lock(m_RWMutex);
       create_table(path);
       toml::table *current = &m_Table;
       for(std::size_t i{0}; i < path.size(); ++i)  current = (*current).at(path.at(i)).as_table();
