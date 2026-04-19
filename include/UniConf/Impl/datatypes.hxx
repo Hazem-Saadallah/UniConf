@@ -17,9 +17,9 @@ namespace UniConf {
         GDBM
       };
 
-      typedef std::unique_ptr<BaseManager> Config;
-      typedef std::unique_ptr<TomlManager> TomlConfig;
-      typedef std::unique_ptr<XMLManager> XMLConfig;
+      typedef std::shared_ptr<BaseManager> Config;
+      typedef std::shared_ptr<TomlManager> TomlConfig;
+      typedef std::shared_ptr<XMLManager> XMLConfig;
       typedef std::vector<std::string> PathType;
     }
   }

@@ -35,6 +35,9 @@ namespace UniConf {
       void refresh();
       virtual void save(std::optional<std::string> file_path=std::nullopt) = 0;
       
+      template<typename T> std::optional<T> get_as(const std::vector<std::string>& full_path) const;
+      template<typename T> std::optional<T> get_as(const std::vector<std::string>& path, const std::string& key) const;
+
       virtual std::optional<std::string> get_string(const std::vector<std::string>& full_path) const = 0;
       virtual std::optional<std::string> get_string(const std::vector<std::string>& path, const std::string& key) const = 0;
 
@@ -69,6 +72,8 @@ namespace UniConf {
       virtual bool path_exists(const std::vector<std::string>& path) const = 0;
       virtual void create_table(const std::vector<std::string>& path) = 0;
 
+      template<typename T> void set_as(const std::vector<std::string>& path, const std::string& key, const T& value);
+
       virtual void set_string(const std::vector<std::string>& path, const std::string& key, const std::string& value) = 0;
       virtual void set_int8(const std::vector<std::string>& path, const std::string& key, std::int8_t value) = 0;
       virtual void set_uint8(const std::vector<std::string>& path, const std::string& key, std::uint8_t value) = 0;
@@ -81,6 +86,8 @@ namespace UniConf {
       virtual void set_float32(const std::vector<std::string>& path, const std::string& key, std::float_t value) = 0;
       virtual void set_float64(const std::vector<std::string>& path, const std::string& key, std::double_t value) = 0;
       virtual void set_bool(const std::vector<std::string>& path, const std::string& key, bool value) = 0;
+
+      template<typename T> void set_or_create_as(const std::vector<std::string>& path, const std::string& key, const T& value);
 
       virtual void set_or_create_string(const std::vector<std::string>& path, const std::string& key, const std::string& value) = 0;
       virtual void set_or_create_int8(const std::vector<std::string>& path, const std::string& key, std::int8_t value) = 0;

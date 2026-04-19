@@ -1,13 +1,12 @@
 #pragma once 
 
-#include <concepts>
 #include <string>
-#include <vector>
 #include <memory>
 #include <UniConf/Impl/datatypes.hxx>
 #include <UniConf/Impl/BaseManager.hxx>
 #include <UniConf/Impl/TomlManager.hxx>
 #include <UniConf/Impl/XMLManager.hxx>
+#include <UniConf/Impl/Value.hxx>
 
 namespace UniConf {
   typedef UniConf::Impl::Datatype::Config Config;
@@ -15,6 +14,7 @@ namespace UniConf {
   typedef UniConf::Impl::Datatype::XMLConfig XMLConfig;
   typedef UniConf::Impl::Datatype::PathType PathType;
   typedef UniConf::Impl::Datatype::FileType FileType;
+  template <typename T> using Value = UniConf::Impl::Value<T>;
 
   UniConf::Impl::Datatype::Config Create(const std::string& file_path, UniConf::Impl::Datatype::FileType file_type);
 
