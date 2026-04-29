@@ -61,6 +61,19 @@ template<> std::optional<std::double_t> UniConf::Impl::BaseManager::get_as<std::
 template<> std::optional<bool> UniConf::Impl::BaseManager::get_as<bool>(const std::vector<std::string>& full_path) const { return get_bool(full_path); }
 template<> std::optional<bool> UniConf::Impl::BaseManager::get_as<bool>(const std::vector<std::string>& path, const std::string& key) const { return get_bool(path, key); }
 
+template<> void UniConf::Impl::BaseManager::set_as<std::string>(const std::vector<std::string>& full_path, const std::string& value) { return set_string(full_path, value); }
+template<> void UniConf::Impl::BaseManager::set_as<std::int8_t>(const std::vector<std::string>& full_path, const std::int8_t& value) { return set_int8(full_path, value); }
+template<> void UniConf::Impl::BaseManager::set_as<std::uint8_t>(const std::vector<std::string>& full_path, const std::uint8_t& value) { return set_uint8(full_path, value); }
+template<> void UniConf::Impl::BaseManager::set_as<std::int16_t>(const std::vector<std::string>& full_path, const std::int16_t& value) { return set_int16(full_path, value); }
+template<> void UniConf::Impl::BaseManager::set_as<std::uint16_t>(const std::vector<std::string>& full_path, const std::uint16_t& value) { return set_uint16(full_path, value); }
+template<> void UniConf::Impl::BaseManager::set_as<std::int32_t>(const std::vector<std::string>& full_path, const std::int32_t& value) { return set_int32(full_path, value); }
+template<> void UniConf::Impl::BaseManager::set_as<std::uint32_t>(const std::vector<std::string>& full_path, const std::uint32_t& value) { return set_uint32(full_path, value); }
+template<> void UniConf::Impl::BaseManager::set_as<std::int64_t>(const std::vector<std::string>& full_path, const std::int64_t& value) { return set_int64(full_path, value); }
+template<> void UniConf::Impl::BaseManager::set_as<std::uint64_t>(const std::vector<std::string>& full_path, const std::uint64_t& value) { return set_uint64(full_path, value); }
+template<> void UniConf::Impl::BaseManager::set_as<std::float_t>(const std::vector<std::string>& full_path, const std::float_t& value) { return set_float32(full_path, value); }
+template<> void UniConf::Impl::BaseManager::set_as<std::double_t>(const std::vector<std::string>& full_path, const std::double_t& value) { return set_float64(full_path, value); }
+template<> void UniConf::Impl::BaseManager::set_as<bool>(const std::vector<std::string>& full_path, const bool& value) { return set_bool(full_path, value); }
+
 template<> void UniConf::Impl::BaseManager::set_as<std::string>(const std::vector<std::string>& path, const std::string& key, const std::string& value) { return set_string(path, key, value); }
 template<> void UniConf::Impl::BaseManager::set_as<std::int8_t>(const std::vector<std::string>& path, const std::string& key, const std::int8_t& value) { return set_int8(path, key, value); }
 template<> void UniConf::Impl::BaseManager::set_as<std::uint8_t>(const std::vector<std::string>& path, const std::string& key, const std::uint8_t& value) { return set_uint8(path, key, value); }
@@ -73,6 +86,19 @@ template<> void UniConf::Impl::BaseManager::set_as<std::uint64_t>(const std::vec
 template<> void UniConf::Impl::BaseManager::set_as<std::float_t>(const std::vector<std::string>& path, const std::string& key, const std::float_t& value) { return set_float32(path, key, value); }
 template<> void UniConf::Impl::BaseManager::set_as<std::double_t>(const std::vector<std::string>& path, const std::string& key, const std::double_t& value) { return set_float64(path, key, value); }
 template<> void UniConf::Impl::BaseManager::set_as<bool>(const std::vector<std::string>& path, const std::string& key, const bool& value) { return set_bool(path, key, value); }
+
+template<> void UniConf::Impl::BaseManager::set_or_create_as<std::string>(const std::vector<std::string>& full_path, const std::string& value) { return set_or_create_string(full_path, value); }
+template<> void UniConf::Impl::BaseManager::set_or_create_as<std::int8_t>(const std::vector<std::string>& full_path, const std::int8_t& value) { return set_or_create_int8(full_path, value); }
+template<> void UniConf::Impl::BaseManager::set_or_create_as<std::uint8_t>(const std::vector<std::string>& full_path, const std::uint8_t& value) { return set_or_create_uint8(full_path, value); }
+template<> void UniConf::Impl::BaseManager::set_or_create_as<std::int16_t>(const std::vector<std::string>& full_path, const std::int16_t& value) { return set_or_create_int16(full_path, value); }
+template<> void UniConf::Impl::BaseManager::set_or_create_as<std::uint16_t>(const std::vector<std::string>& full_path, const std::uint16_t& value) { return set_or_create_uint16(full_path, value); }
+template<> void UniConf::Impl::BaseManager::set_or_create_as<std::int32_t>(const std::vector<std::string>& full_path, const std::int32_t& value) { return set_or_create_int32(full_path, value); }
+template<> void UniConf::Impl::BaseManager::set_or_create_as<std::uint32_t>(const std::vector<std::string>& full_path, const std::uint32_t& value) { return set_or_create_uint32(full_path, value); }
+template<> void UniConf::Impl::BaseManager::set_or_create_as<std::int64_t>(const std::vector<std::string>& full_path, const std::int64_t& value) { return set_or_create_int64(full_path, value); }
+template<> void UniConf::Impl::BaseManager::set_or_create_as<std::uint64_t>(const std::vector<std::string>& full_path, const std::uint64_t& value) { return set_or_create_uint64(full_path, value); }
+template<> void UniConf::Impl::BaseManager::set_or_create_as<std::float_t>(const std::vector<std::string>& full_path, const std::float_t& value) { return set_or_create_float32(full_path, value); }
+template<> void UniConf::Impl::BaseManager::set_or_create_as<std::double_t>(const std::vector<std::string>& full_path, const std::double_t& value) { return set_or_create_float64(full_path, value); }
+template<> void UniConf::Impl::BaseManager::set_or_create_as<bool>(const std::vector<std::string>& full_path, const bool& value) { return set_or_create_bool(full_path, value); }
 
 template<> void UniConf::Impl::BaseManager::set_or_create_as<std::string>(const std::vector<std::string>& path, const std::string& key, const std::string& value) { return set_or_create_string(path, key, value); }
 template<> void UniConf::Impl::BaseManager::set_or_create_as<std::int8_t>(const std::vector<std::string>& path, const std::string& key, const std::int8_t& value) { return set_or_create_int8(path, key, value); }

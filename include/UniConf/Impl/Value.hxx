@@ -1,9 +1,10 @@
 #pragma once
 
+#include <mutex>
 #include <optional>
 #include <shared_mutex>
-#include <UniConf/Impl/BaseManager.hxx>
 #include <UniConf/Impl/datatypes.hxx>
+#include <UniConf/Impl/BaseManager.hxx>
 
 namespace UniConf {
   namespace Impl {

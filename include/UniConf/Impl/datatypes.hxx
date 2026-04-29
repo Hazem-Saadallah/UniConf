@@ -1,12 +1,14 @@
 #pragma once
 
 #include <memory>
-#include <UniConf/Impl/BaseManager.hxx>
-#include <UniConf/Impl/TomlManager.hxx>
-#include <UniConf/Impl/XMLManager.hxx>
+#include <vector>
 
 namespace UniConf {
   namespace Impl {
+    class BaseManager;
+    class TomlManager;
+    class XMLManager;
+
     namespace Datatype {
       enum class FileType {
         TOML=0,

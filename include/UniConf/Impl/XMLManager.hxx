@@ -1,5 +1,6 @@
 #pragma once
 
+#include "UniConf/Impl/datatypes.hxx"
 #include <mutex>
 #include <shared_mutex>
 #include <span>
@@ -46,6 +47,52 @@ namespace UniConf {
           }
         }
         else return std::nullopt;
+      }
+
+      template<typename T> void set_as_impl(const std::vector<std::string>& full_path, const T& value) {
+        if(full_path.empty()) return;
+
+        Datatype::PathType path = Datatype::PathType(full_path.begin(), full_path.end()-1);
+        std::string key = full_path.back();
+
+        std::optional<pugi::xml_node> node = navigate_parents(path, false);
+        if(!node.has_value()) return;
+        if(key[0] == '@') {
+          std::string attribute_name = key.substr(1);
+          pugi::xml_attribute attribute = node.value().attribute(attribute_name.c_str());
+          if(attribute) {
+            if constexpr (std::is_same_v<T, std::string>) attribute.set_value(value.c_str());
+            else attribute.set_value(value);
+          } else { /* TODO: Add error handling */ }
+        } else {
+          pugi::xml_node child = node.value().child(key.c_str());
+          if(child) {
+            if constexpr (std::is_same_v<T, std::string>) child.text().set(value.c_str());
+            else child.text().set(value);
+          } else { /* TODO: Add error handling */ }
+        }
+      }
+
+      template<typename T> void set_or_create_as_impl(const std::vector<std::string>& full_path, const T& value) {
+        Datatype::PathType path = Datatype::PathType(full_path.begin(), full_path.end()-1);
+        std::string key = full_path.back();
+
+        if(key.empty()) return;
+
+        std::optional<pugi::xml_node> node = navigate_parents(path, true);
+        if(!node.has_value()) return;
+        if(key[0] == '@') {
+          std::string attribute_name = key.substr(1);
+          pugi::xml_attribute attribute = node.value().attribute(attribute_name.c_str());
+          if(!attribute) attribute = node.value().append_attribute(attribute_name.c_str());
+          if constexpr (std::is_same_v<T, std::string>) attribute.set_value(value.c_str());
+          else attribute.set_value(value);
+        } else {
+          pugi::xml_node child = node.value().child(key.c_str());
+          if(!child) child = node.value().append_child(key.c_str());
+          if constexpr (std::is_same_v<T, std::string>) child.text().set(value.c_str());
+          else child.text().set(value);
+        }
       }
 
     public:
@@ -103,27 +150,30 @@ namespace UniConf {
       bool path_exists(const std::vector<std::string>& path) const override;
       void create_table(const std::vector<std::string>& path) override;
 
+      template<typename T> void set_as(const std::vector<std::string>& full_path, const T& value) {
+        std::unique_lock<std::shared_mutex> lock(m_RWMutex);
+        set_as_impl(full_path, value);
+      }
+
       template<typename T> void set_as(const std::vector<std::string>& path, const std::string& key, const T& value) {
         std::unique_lock<std::shared_mutex> lock(m_RWMutex);
-        if(key.empty()) return;
-
-        std::optional<pugi::xml_node> node = navigate_parents(path, false);
-        if(!node.has_value()) return;
-        if(key[0] == '@') {
-          std::string attribute_name = key.substr(1);
-          pugi::xml_attribute attribute = node.value().attribute(attribute_name.c_str());
-          if(attribute) {
-            if constexpr (std::is_same_v<T, std::string>) attribute.set_value(value.c_str());
-            else attribute.set_value(value);
-          } else { /* TODO: Add error handling */ }
-        } else {
-          pugi::xml_node child = node.value().child(key.c_str());
-          if(child) {
-            if constexpr (std::is_same_v<T, std::string>) child.text().set(value.c_str());
-            else child.text().set(value);
-          } else { /* TODO: Add error handling */ }
-        }
+        Datatype::PathType full_path = path;
+        full_path.push_back(key);
+        set_as_impl(full_path, value);
       }
+
+      void set_string(const std::vector<std::string>& full_path, const std::string& value) override;
+      void set_int8(const std::vector<std::string>& full_path, std::int8_t value) override;
+      void set_uint8(const std::vector<std::string>& full_path, std::uint8_t value) override;
+      void set_int16(const std::vector<std::string>& full_path, std::int16_t value) override;
+      void set_uint16(const std::vector<std::string>& full_path, std::uint16_t value) override;
+      void set_int32(const std::vector<std::string>& full_path, std::int32_t value) override;
+      void set_uint32(const std::vector<std::string>& full_path, std::uint32_t value) override;
+      void set_int64(const std::vector<std::string>& full_path, std::int64_t value) override;
+      void set_uint64(const std::vector<std::string>& full_path, std::uint64_t value) override;
+      void set_float32(const std::vector<std::string>& full_path, std::float_t value) override;
+      void set_float64(const std::vector<std::string>& full_path, std::double_t value) override;
+      void set_bool(const std::vector<std::string>& full_path, bool value) override;
 
       void set_string(const std::vector<std::string>& path, const std::string& key, const std::string& value) override;
       void set_int8(const std::vector<std::string>& path, const std::string& key, std::int8_t value) override;
@@ -138,25 +188,31 @@ namespace UniConf {
       void set_float64(const std::vector<std::string>& path, const std::string& key, std::double_t value) override;
       void set_bool(const std::vector<std::string>& path, const std::string& key, bool value) override;
 
+
+      template<typename T> void set_or_create_as(const std::vector<std::string>& full_path, const T& value) {
+        std::unique_lock<std::shared_mutex> lock(m_RWMutex);
+        set_or_create_as_impl(full_path, value);
+      }
+
       template<typename T> void set_or_create_as(const std::vector<std::string>& path, const std::string& key, const T& value) {
         std::unique_lock<std::shared_mutex> lock(m_RWMutex);
-        if(key.empty()) return;
-
-        std::optional<pugi::xml_node> node = navigate_parents(path, true);
-        if(!node.has_value()) return;
-        if(key[0] == '@') {
-          std::string attribute_name = key.substr(1);
-          pugi::xml_attribute attribute = node.value().attribute(attribute_name.c_str());
-          if(!attribute) attribute = node.value().append_attribute(attribute_name.c_str());
-          if constexpr (std::is_same_v<T, std::string>) attribute.set_value(value.c_str());
-          else attribute.set_value(value);
-        } else {
-          pugi::xml_node child = node.value().child(key.c_str());
-          if(!child) child = node.value().append_child(key.c_str());
-          if constexpr (std::is_same_v<T, std::string>) child.text().set(value.c_str());
-          else child.text().set(value);
-        }
+        Datatype::PathType full_path = path;
+        full_path.push_back(key);
+        set_or_create_as_impl(full_path, value);
       }
+
+      void set_or_create_string(const std::vector<std::string>& full_path, const std::string& value) override;
+      void set_or_create_int8(const std::vector<std::string>& full_path, std::int8_t value) override;
+      void set_or_create_uint8(const std::vector<std::string>& full_path, std::uint8_t value) override;
+      void set_or_create_int16(const std::vector<std::string>& full_path, std::int16_t value) override;
+      void set_or_create_uint16(const std::vector<std::string>& full_path, std::uint16_t value) override;
+      void set_or_create_int32(const std::vector<std::string>& full_path, std::int32_t value) override;
+      void set_or_create_uint32(const std::vector<std::string>& full_path, std::uint32_t value) override;
+      void set_or_create_int64(const std::vector<std::string>& full_path, std::int64_t value) override;
+      void set_or_create_uint64(const std::vector<std::string>& full_path, std::uint64_t value) override;
+      void set_or_create_float32(const std::vector<std::string>& full_path, std::float_t value) override;
+      void set_or_create_float64(const std::vector<std::string>& full_path, std::double_t value) override;
+      void set_or_create_bool(const std::vector<std::string>& full_path, bool value) override;
 
       void set_or_create_string(const std::vector<std::string>& path, const std::string& key, const std::string& value) override;
       void set_or_create_int8(const std::vector<std::string>& path, const std::string& key, std::int8_t value) override;

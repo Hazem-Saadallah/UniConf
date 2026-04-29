@@ -7,6 +7,7 @@
 #include <vector>
 #include <shared_mutex>
 #include <toml++/toml.hpp>
+#include <UniConf/Impl/datatypes.hxx>
 #include <UniConf/Impl/BaseManager.hxx>
 #include <UniConf/Impl/TomlManager.hxx>
 
@@ -15,6 +16,29 @@ namespace UniConf {
   class TomlManager : public UniConf::Impl::BaseManager {
   private:
     toml::table m_Table;
+
+
+  private:
+    template <typename T> inline void set_as_impl(const std::vector<std::string>& full_path, T value) {
+      toml::table *current = &m_Table;
+      for(std::size_t i{0}; i < full_path.size()-1; ++i) {
+        const std::string& path_part = full_path[i];
+        toml::node* next_node = current->get(path_part);
+        if(!next_node || !next_node->is_table()) return; /* TODO: Add error handling */
+        current = next_node->as_table();
+      }
+      current->insert_or_assign(full_path.back(), std::forward<T>(value));
+    }
+
+    template <typename T> inline void set_or_create_as_impl(const std::vector<std::string>& full_path, T value) {
+      Datatype::PathType path = Datatype::PathType(full_path.begin(), full_path.end()-1);
+      std::string key = full_path.back();
+      create_table(path);
+      toml::table *current = &m_Table;
+      for(std::size_t i{0}; i < path.size(); ++i)  current = (*current).at(path.at(i)).as_table();
+      current->insert_or_assign(key, std::forward<T>(value));
+    }
+
 
   public:
     TomlManager() = default;
@@ -82,27 +106,44 @@ namespace UniConf {
     std::optional<bool> get_bool(const std::vector<std::string>& path, const std::string& key) const override;
 
     template <typename T> inline void set_as(const std::vector<std::string>& path, const std::string& key, T value) {
+      Datatype::PathType full_path = path;
+      full_path.push_back(key);
       std::unique_lock<std::shared_mutex> lock(m_RWMutex);
-      toml::table *current = &m_Table;
-      for(std::size_t i{0}; i < path.size(); ++i) {
-        const std::string& path_part = path[i];
-        toml::node* next_node = current->get(path_part);
-        if(!next_node || !next_node->is_table()) return;
-        current = next_node->as_table();
-      }
-      current->insert_or_assign(key, std::forward<T>(value));
+      set_as_impl(full_path, value);
+    }
+
+    template <typename T> inline void set_as(const std::vector<std::string>& full_path, T value) {
+      std::unique_lock<std::shared_mutex> lock(m_RWMutex);
+      set_as_impl(full_path, value);
+    }
+
+    template <typename T> inline void set_or_create_as(const std::vector<std::string>& full_path, T value) {
+      std::unique_lock<std::shared_mutex> lock(m_RWMutex);
+      set_or_create_as_impl(full_path, value);
     }
 
     template <typename T> inline void set_or_create_as(const std::vector<std::string>& path, const std::string& key, T value) {
       std::unique_lock<std::shared_mutex> lock(m_RWMutex);
-      create_table(path);
-      toml::table *current = &m_Table;
-      for(std::size_t i{0}; i < path.size(); ++i)  current = (*current).at(path.at(i)).as_table();
-      current->insert_or_assign(key, std::forward<T>(value));
+      Datatype::PathType full_path = path;
+      full_path.push_back(key);
+      set_or_create_as_impl(full_path, value);
     }
 
     bool path_exists(const std::vector<std::string>& path) const override;
     void create_table(const std::vector<std::string>& path) override;
+
+    void set_string(const std::vector<std::string>& full_path, const std::string& value) override;
+    void set_int8(const std::vector<std::string>& full_path, std::int8_t value) override;
+    void set_uint8(const std::vector<std::string>& full_path, std::uint8_t value) override;
+    void set_int16(const std::vector<std::string>& full_path, std::int16_t value) override;
+    void set_uint16(const std::vector<std::string>& full_path, std::uint16_t value) override;
+    void set_int32(const std::vector<std::string>& full_path, std::int32_t value) override;
+    void set_uint32(const std::vector<std::string>& full_path, std::uint32_t value) override;
+    void set_int64(const std::vector<std::string>& full_path, std::int64_t value) override;
+    void set_uint64(const std::vector<std::string>& full_path, std::uint64_t value) override;
+    void set_float32(const std::vector<std::string>& full_path, std::float_t value) override;
+    void set_float64(const std::vector<std::string>& full_path, std::double_t value) override;
+    void set_bool(const std::vector<std::string>& full_path, bool value) override;
 
     void set_string(const std::vector<std::string>& path, const std::string& key, const std::string& value) override;
     void set_int8(const std::vector<std::string>& path, const std::string& key, std::int8_t value) override;
@@ -116,6 +157,19 @@ namespace UniConf {
     void set_float32(const std::vector<std::string>& path, const std::string& key, std::float_t value) override;
     void set_float64(const std::vector<std::string>& path, const std::string& key, std::double_t value) override;
     void set_bool(const std::vector<std::string>& path, const std::string& key, bool value) override;
+
+    void set_or_create_string(const std::vector<std::string>& full_path, const std::string& value) override;
+    void set_or_create_int8(const std::vector<std::string>& full_path, std::int8_t value) override;
+    void set_or_create_uint8(const std::vector<std::string>& full_path, std::uint8_t value) override;
+    void set_or_create_int16(const std::vector<std::string>& full_path, std::int16_t value) override;
+    void set_or_create_uint16(const std::vector<std::string>& full_path, std::uint16_t value) override;
+    void set_or_create_int32(const std::vector<std::string>& full_path, std::int32_t value) override;
+    void set_or_create_uint32(const std::vector<std::string>& full_path, std::uint32_t value) override;
+    void set_or_create_int64(const std::vector<std::string>& full_path, std::int64_t value) override;
+    void set_or_create_uint64(const std::vector<std::string>& full_path, std::uint64_t value) override;
+    void set_or_create_float32(const std::vector<std::string>& full_path, std::float_t value) override;
+    void set_or_create_float64(const std::vector<std::string>& full_path, std::double_t value) override;
+    void set_or_create_bool(const std::vector<std::string>& full_path, bool value) override;
 
     void set_or_create_string(const std::vector<std::string>& path, const std::string& key, const std::string& value) override;
     void set_or_create_int8(const std::vector<std::string>& path, const std::string& key, std::int8_t value) override;

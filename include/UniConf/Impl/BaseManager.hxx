@@ -1,11 +1,11 @@
 #pragma once
 
 #include <cmath>
-#include <shared_mutex>
 #include <string>
 #include <vector>
 #include <cstdint>
 #include <optional>
+#include <shared_mutex>
 
 namespace UniConf {
   namespace Impl {
@@ -72,7 +72,21 @@ namespace UniConf {
       virtual bool path_exists(const std::vector<std::string>& path) const = 0;
       virtual void create_table(const std::vector<std::string>& path) = 0;
 
+      template<typename T> void set_as(const std::vector<std::string>& full_path, const T& value);
       template<typename T> void set_as(const std::vector<std::string>& path, const std::string& key, const T& value);
+
+      virtual void set_string(const std::vector<std::string>& full_path, const std::string& value) = 0;
+      virtual void set_int8(const std::vector<std::string>& full_path, std::int8_t value) = 0;
+      virtual void set_uint8(const std::vector<std::string>& full_path, std::uint8_t value) = 0;
+      virtual void set_int16(const std::vector<std::string>& full_path, std::int16_t value) = 0;
+      virtual void set_uint16(const std::vector<std::string>& full_path, std::uint16_t value) = 0;
+      virtual void set_int32(const std::vector<std::string>& full_path, std::int32_t value) = 0;
+      virtual void set_uint32(const std::vector<std::string>& full_path, std::uint32_t value) = 0;
+      virtual void set_int64(const std::vector<std::string>& full_path, std::int64_t value) = 0;
+      virtual void set_uint64(const std::vector<std::string>& full_path, std::uint64_t value) = 0;
+      virtual void set_float32(const std::vector<std::string>& full_path, std::float_t value) = 0;
+      virtual void set_float64(const std::vector<std::string>& full_path, std::double_t value) = 0;
+      virtual void set_bool(const std::vector<std::string>& full_path, bool value) = 0;
 
       virtual void set_string(const std::vector<std::string>& path, const std::string& key, const std::string& value) = 0;
       virtual void set_int8(const std::vector<std::string>& path, const std::string& key, std::int8_t value) = 0;
@@ -87,7 +101,21 @@ namespace UniConf {
       virtual void set_float64(const std::vector<std::string>& path, const std::string& key, std::double_t value) = 0;
       virtual void set_bool(const std::vector<std::string>& path, const std::string& key, bool value) = 0;
 
+      template<typename T> void set_or_create_as(const std::vector<std::string>& full_path, const T& value);
       template<typename T> void set_or_create_as(const std::vector<std::string>& path, const std::string& key, const T& value);
+
+      virtual void set_or_create_string(const std::vector<std::string>& full_path, const std::string& value) = 0;
+      virtual void set_or_create_int8(const std::vector<std::string>& full_path, std::int8_t value) = 0;
+      virtual void set_or_create_uint8(const std::vector<std::string>& full_path, std::uint8_t value) = 0;
+      virtual void set_or_create_int16(const std::vector<std::string>& full_path, std::int16_t value) = 0;
+      virtual void set_or_create_uint16(const std::vector<std::string>& full_path, std::uint16_t value) = 0;
+      virtual void set_or_create_int32(const std::vector<std::string>& full_path, std::int32_t value) = 0;
+      virtual void set_or_create_uint32(const std::vector<std::string>& full_path, std::uint32_t value) = 0;
+      virtual void set_or_create_int64(const std::vector<std::string>& full_path, std::int64_t value) = 0;
+      virtual void set_or_create_uint64(const std::vector<std::string>& full_path, std::uint64_t value) = 0;
+      virtual void set_or_create_float32(const std::vector<std::string>& full_path, std::float_t value) = 0;
+      virtual void set_or_create_float64(const std::vector<std::string>& full_path, std::double_t value) = 0;
+      virtual void set_or_create_bool(const std::vector<std::string>& full_path, bool value) = 0;
 
       virtual void set_or_create_string(const std::vector<std::string>& path, const std::string& key, const std::string& value) = 0;
       virtual void set_or_create_int8(const std::vector<std::string>& path, const std::string& key, std::int8_t value) = 0;
