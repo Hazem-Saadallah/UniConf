@@ -1,7 +1,9 @@
+#include "UniConf/Impl/Util/Macro.hxx"
 #include <mutex>
 #include <fstream>
 #include <optional>
 #include <shared_mutex>
+#include <string>
 #include <toml++/toml.hpp>
 #include <UniConf/Impl/BaseManager.hxx>
 #include <UniConf/Impl/TomlManager.hxx>
@@ -20,36 +22,41 @@ void UniConf::Impl::TomlManager::save(std::optional<std::string> file_path) {
   std::ofstream(file_path.value_or(m_ConfigPath)) << m_Table;
 }
 
-std::optional<std::string> UniConf::Impl::TomlManager::get_string(const std::vector<std::string>& full_path) const { return get_as<std::string>(full_path); }
-std::optional<std::string> UniConf::Impl::TomlManager::get_string(const std::vector<std::string>& path, const std::string& key) const { return get_as<std::string>(path, key); }
+GET_STRING_DEFINITION(UniConf::Impl::TomlManager);
+GET_BOOL_DEFINITION(UniConf::Impl::TomlManager);
+GET_FLOAT_DEFINITION(UniConf::Impl::TomlManager);
+GET_SIGN_INT_DEFINITION(UniConf::Impl::TomlManager);
+GET_UINT8_DEFINITION(UniConf::Impl::TomlManager);
+GET_UINT16_DEFINITION(UniConf::Impl::TomlManager);
+GET_UINT32_DEFINITION(UniConf::Impl::TomlManager);
+std::optional<std::uint64_t> UniConf::Impl::TomlManager::get_uint64(const Datatype::PathType& full_path) const {
+  if(std::optional<std::string> val = get_as<std::string>(full_path)) return std::stoull(*val);
+  return std::nullopt;
+}
+std::optional<std::uint64_t> UniConf::Impl::TomlManager::get_uint64(const Datatype::PathType& path, const std::string& key) const {
+  if(std::optional<std::string> val = get_as<std::string>(path, key)) return std::stoull(*val);
+  return std::nullopt;
+}
 
-std::optional<std::int8_t> UniConf::Impl::TomlManager::get_int8(const std::vector<std::string>& full_path) const { return get_as<std::int8_t>(full_path); }
-std::optional<std::int8_t> UniConf::Impl::TomlManager::get_int8(const std::vector<std::string>& path, const std::string& key) const { return get_as<std::int8_t>(path, key); }
-std::optional<std::uint8_t> UniConf::Impl::TomlManager::get_uint8(const std::vector<std::string>& full_path) const { return get_as<std::uint8_t>(full_path); }
-std::optional<std::uint8_t> UniConf::Impl::TomlManager::get_uint8(const std::vector<std::string>& path, const std::string& key) const { return get_as<std::uint8_t>(path, key); }
+SET_STRING_DEFINITION(UniConf::Impl::TomlManager);
+SET_BOOL_DEFINITION(UniConf::Impl::TomlManager);
+SET_FLOAT_DEFINITION(UniConf::Impl::TomlManager);
+SET_SIGN_INT_DEFINITION(UniConf::Impl::TomlManager);
+SET_UINT8_DEFINITION(UniConf::Impl::TomlManager);
+SET_UINT16_DEFINITION(UniConf::Impl::TomlManager);
+SET_UINT32_DEFINITION(UniConf::Impl::TomlManager);
+void UniConf::Impl::TomlManager::set_uint64(const Datatype::PathType& full_path, std::uint64_t value) { set_as<std::string>(full_path, std::to_string(value)); }
+void UniConf::Impl::TomlManager::set_uint64(const Datatype::PathType& path, const std::string& key, std::uint64_t value) { set_as<std::string>(path, key, std::to_string(value)); }
 
-std::optional<std::int16_t> UniConf::Impl::TomlManager::get_int16(const std::vector<std::string>& full_path) const { return get_as<std::int16_t>(full_path); }
-std::optional<std::int16_t> UniConf::Impl::TomlManager::get_int16(const std::vector<std::string>& path, const std::string& key) const { return get_as<std::int16_t>(path, key); }
-std::optional<std::uint16_t> UniConf::Impl::TomlManager::get_uint16(const std::vector<std::string>& full_path) const { return get_as<std::uint16_t>(full_path); }
-std::optional<std::uint16_t> UniConf::Impl::TomlManager::get_uint16(const std::vector<std::string>& path, const std::string& key) const { return get_as<std::uint16_t>(path, key); }
-
-std::optional<std::int32_t> UniConf::Impl::TomlManager::get_int32(const std::vector<std::string>& full_path) const { return get_as<std::int32_t>(full_path); }
-std::optional<std::int32_t> UniConf::Impl::TomlManager::get_int32(const std::vector<std::string>& path, const std::string& key) const { return get_as<std::int32_t>(path, key); }
-std::optional<std::uint32_t> UniConf::Impl::TomlManager::get_uint32(const std::vector<std::string>& full_path) const { return get_as<std::uint32_t>(full_path); }
-std::optional<std::uint32_t> UniConf::Impl::TomlManager::get_uint32(const std::vector<std::string>& path, const std::string& key) const { return get_as<std::uint32_t>(path, key); }
-
-std::optional<std::int64_t> UniConf::Impl::TomlManager::get_int64(const std::vector<std::string>& full_path) const { return get_as<std::int64_t>(full_path); }
-std::optional<std::int64_t> UniConf::Impl::TomlManager::get_int64(const std::vector<std::string>& path, const std::string& key) const { return get_as<std::int64_t>(path, key); }
-std::optional<std::uint64_t> UniConf::Impl::TomlManager::get_uint64(const std::vector<std::string>& full_path) const  { return get_as<std::uint64_t>(full_path); }
-std::optional<std::uint64_t> UniConf::Impl::TomlManager::get_uint64(const std::vector<std::string>& path, const std::string& key) const  { return get_as<std::uint64_t>(path, key); }
-
-std::optional<std::float_t> UniConf::Impl::TomlManager::get_float32(const std::vector<std::string>& full_path) const { return get_as<std::float_t>(full_path); }
-std::optional<std::float_t> UniConf::Impl::TomlManager::get_float32(const std::vector<std::string>& path, const std::string& key) const { return get_as<std::float_t>(path, key); }
-std::optional<std::double_t> UniConf::Impl::TomlManager::get_float64(const std::vector<std::string>& full_path) const { return get_as<std::double_t>(full_path); }
-std::optional<std::double_t> UniConf::Impl::TomlManager::get_float64(const std::vector<std::string>& path, const std::string& key) const { return get_as<std::double_t>(path, key); }
-
-std::optional<bool> UniConf::Impl::TomlManager::get_bool(const std::vector<std::string>& full_path) const { return get_as<bool>(full_path); }
-std::optional<bool> UniConf::Impl::TomlManager::get_bool(const std::vector<std::string>& path, const std::string& key) const { return get_as<bool>(path, key); }
+SET_OR_CREATE_STRING_DEFINITION(UniConf::Impl::TomlManager);
+SET_OR_CREATE_BOOL_DEFINITION(UniConf::Impl::TomlManager);
+SET_OR_CREATE_FLOAT_DEFINITION(UniConf::Impl::TomlManager);
+SET_OR_CREATE_SIGN_INT_DEFINITION(UniConf::Impl::TomlManager);
+SET_OR_CREATE_UINT8_DEFINITION(UniConf::Impl::TomlManager);
+SET_OR_CREATE_UINT16_DEFINITION(UniConf::Impl::TomlManager);
+SET_OR_CREATE_UINT32_DEFINITION(UniConf::Impl::TomlManager);
+void UniConf::Impl::TomlManager::set_or_create_uint64(const Datatype::PathType& full_path, std::uint64_t value) { set_or_create_as<std::string>(full_path, std::to_string(value)); }
+void UniConf::Impl::TomlManager::set_or_create_uint64(const Datatype::PathType& path, const std::string& key, std::uint64_t value) { set_or_create_as<std::string>(path, key, std::to_string(value)); }
 
 bool UniConf::Impl::TomlManager::path_exists(const std::vector<std::string>& path) const {
   std::unique_lock<std::shared_mutex> lock(m_RWMutex);
@@ -73,55 +80,3 @@ void UniConf::Impl::TomlManager::create_table(const std::vector<std::string>& pa
     current = (*current).at(path.at(i)).as_table();
   }
 }
-
-void UniConf::Impl::TomlManager::set_string(const std::vector<std::string>& full_path, const std::string& value) { set_as<std::string>(full_path, value); }
-void UniConf::Impl::TomlManager::set_int8(const std::vector<std::string>& full_path, std::int8_t value)  { set_as<std::int8_t>(full_path, value); }
-void UniConf::Impl::TomlManager::set_uint8(const std::vector<std::string>& full_path, std::uint8_t value)  { set_as<std::uint8_t>(full_path, value); }
-void UniConf::Impl::TomlManager::set_int16(const std::vector<std::string>& full_path, std::int16_t value)  { set_as<std::int16_t>(full_path, value); }
-void UniConf::Impl::TomlManager::set_uint16(const std::vector<std::string>& full_path, std::uint16_t value)  { set_as<std::uint16_t>(full_path, value); }
-void UniConf::Impl::TomlManager::set_int32(const std::vector<std::string>& full_path, std::int32_t value)  { set_as<std::int32_t>(full_path, value); }
-void UniConf::Impl::TomlManager::set_uint32(const std::vector<std::string>& full_path, std::uint32_t value)  { set_as<std::uint32_t>(full_path, value); }
-void UniConf::Impl::TomlManager::set_int64(const std::vector<std::string>& full_path, std::int64_t value) { set_as<std::int64_t>(full_path, value); }
-void UniConf::Impl::TomlManager::set_uint64(const std::vector<std::string>& full_path, std::uint64_t value)  { set_as<std::string>(full_path, std::to_string(value)); }
-void UniConf::Impl::TomlManager::set_float32(const std::vector<std::string>& full_path, std::float_t value) { set_as<std::float_t>(full_path, value); }
-void UniConf::Impl::TomlManager::set_float64(const std::vector<std::string>& full_path, std::double_t value) { set_as<std::double_t>(full_path, value); }
-void UniConf::Impl::TomlManager::set_bool(const std::vector<std::string>& full_path, bool value) { set_as<bool>(full_path, value); }
-
-void UniConf::Impl::TomlManager::set_string(const std::vector<std::string>& path, const std::string& key, const std::string& value) { set_as<std::string>(path, key, value); }
-void UniConf::Impl::TomlManager::set_int8(const std::vector<std::string>& path, const std::string& key, std::int8_t value)  { set_as<std::int8_t>(path, key, value); }
-void UniConf::Impl::TomlManager::set_uint8(const std::vector<std::string>& path, const std::string& key, std::uint8_t value)  { set_as<std::uint8_t>(path, key, value); }
-void UniConf::Impl::TomlManager::set_int16(const std::vector<std::string>& path, const std::string& key, std::int16_t value)  { set_as<std::int16_t>(path, key, value); }
-void UniConf::Impl::TomlManager::set_uint16(const std::vector<std::string>& path, const std::string& key, std::uint16_t value)  { set_as<std::uint16_t>(path, key, value); }
-void UniConf::Impl::TomlManager::set_int32(const std::vector<std::string>& path, const std::string& key, std::int32_t value)  { set_as<std::int32_t>(path, key, value); }
-void UniConf::Impl::TomlManager::set_uint32(const std::vector<std::string>& path, const std::string& key, std::uint32_t value)  { set_as<std::uint32_t>(path, key, value); }
-void UniConf::Impl::TomlManager::set_int64(const std::vector<std::string>& path, const std::string& key, std::int64_t value) { set_as<std::int64_t>(path, key, value); }
-void UniConf::Impl::TomlManager::set_uint64(const std::vector<std::string>& path, const std::string& key, std::uint64_t value)  { set_as<std::string>(path, key, std::to_string(value)); }
-void UniConf::Impl::TomlManager::set_float32(const std::vector<std::string>& path, const std::string& key, std::float_t value) { set_as<std::float_t>(path, key, value); }
-void UniConf::Impl::TomlManager::set_float64(const std::vector<std::string>& path, const std::string& key, std::double_t value) { set_as<std::double_t>(path, key, value); }
-void UniConf::Impl::TomlManager::set_bool(const std::vector<std::string>& path, const std::string& key, bool value) { set_as<bool>(path, key, value); }
-
-void UniConf::Impl::TomlManager::set_or_create_string(const std::vector<std::string>& full_path, const std::string& value) { set_or_create_as<std::string>(full_path, value); }
-void UniConf::Impl::TomlManager::set_or_create_int8(const std::vector<std::string>& full_path, std::int8_t value)  { set_or_create_as<std::int8_t>(full_path, value); }
-void UniConf::Impl::TomlManager::set_or_create_uint8(const std::vector<std::string>& full_path, std::uint8_t value)  { set_or_create_as<std::uint8_t>(full_path, value); }
-void UniConf::Impl::TomlManager::set_or_create_int16(const std::vector<std::string>& full_path, std::int16_t value)  { set_or_create_as<std::int16_t>(full_path, value); }
-void UniConf::Impl::TomlManager::set_or_create_uint16(const std::vector<std::string>& full_path, std::uint16_t value)  { set_or_create_as<std::uint16_t>(full_path, value); }
-void UniConf::Impl::TomlManager::set_or_create_int32(const std::vector<std::string>& full_path, std::int32_t value)  { set_or_create_as<std::int32_t>(full_path, value); }
-void UniConf::Impl::TomlManager::set_or_create_uint32(const std::vector<std::string>& full_path, std::uint32_t value)  { set_or_create_as<std::uint32_t>(full_path, value); }
-void UniConf::Impl::TomlManager::set_or_create_int64(const std::vector<std::string>& full_path, std::int64_t value) { set_or_create_as<std::int64_t>(full_path, value); }
-void UniConf::Impl::TomlManager::set_or_create_uint64(const std::vector<std::string>& full_path, std::uint64_t value)  { set_or_create_as<std::string>(full_path, std::to_string(value)); }
-void UniConf::Impl::TomlManager::set_or_create_float32(const std::vector<std::string>& full_path, std::float_t value) { set_or_create_as<std::float_t>(full_path, value); }
-void UniConf::Impl::TomlManager::set_or_create_float64(const std::vector<std::string>& full_path, std::double_t value) { set_or_create_as<std::double_t>(full_path, value); }
-void UniConf::Impl::TomlManager::set_or_create_bool(const std::vector<std::string>& full_path, bool value) { set_or_create_as<bool>(full_path, value); }
-
-void UniConf::Impl::TomlManager::set_or_create_string(const std::vector<std::string>& path, const std::string& key, const std::string& value) { set_or_create_as<std::string>(path, key, value); }
-void UniConf::Impl::TomlManager::set_or_create_int8(const std::vector<std::string>& path, const std::string& key, std::int8_t value)  { set_or_create_as<std::int8_t>(path, key, value); }
-void UniConf::Impl::TomlManager::set_or_create_uint8(const std::vector<std::string>& path, const std::string& key, std::uint8_t value)  { set_or_create_as<std::uint8_t>(path, key, value); }
-void UniConf::Impl::TomlManager::set_or_create_int16(const std::vector<std::string>& path, const std::string& key, std::int16_t value)  { set_or_create_as<std::int16_t>(path, key, value); }
-void UniConf::Impl::TomlManager::set_or_create_uint16(const std::vector<std::string>& path, const std::string& key, std::uint16_t value)  { set_or_create_as<std::uint16_t>(path, key, value); }
-void UniConf::Impl::TomlManager::set_or_create_int32(const std::vector<std::string>& path, const std::string& key, std::int32_t value)  { set_or_create_as<std::int32_t>(path, key, value); }
-void UniConf::Impl::TomlManager::set_or_create_uint32(const std::vector<std::string>& path, const std::string& key, std::uint32_t value)  { set_or_create_as<std::uint32_t>(path, key, value); }
-void UniConf::Impl::TomlManager::set_or_create_int64(const std::vector<std::string>& path, const std::string& key, std::int64_t value) { set_or_create_as<std::int64_t>(path, key, value); }
-void UniConf::Impl::TomlManager::set_or_create_uint64(const std::vector<std::string>& path, const std::string& key, std::uint64_t value)  { set_or_create_as<std::string>(path, key, std::to_string(value)); }
-void UniConf::Impl::TomlManager::set_or_create_float32(const std::vector<std::string>& path, const std::string& key, std::float_t value) { set_or_create_as<std::float_t>(path, key, value); }
-void UniConf::Impl::TomlManager::set_or_create_float64(const std::vector<std::string>& path, const std::string& key, std::double_t value) { set_or_create_as<std::double_t>(path, key, value); }
-void UniConf::Impl::TomlManager::set_or_create_bool(const std::vector<std::string>& path, const std::string& key, bool value) { set_or_create_as<bool>(path, key, value); }

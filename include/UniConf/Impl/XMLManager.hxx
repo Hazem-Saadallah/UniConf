@@ -1,14 +1,15 @@
 #pragma once
 
 #include <mutex>
-#include <shared_mutex>
 #include <span>
 #include <string>
 #include <vector>
 #include <concepts>
+#include <shared_mutex>
 #include <pugixml.hpp>
 #include <UniConf/Impl/datatypes.hxx>
 #include <UniConf/Impl/BaseManager.hxx>
+#include <UniConf/Impl/Util/Macro.hxx>
 
 
 namespace UniConf {
@@ -112,128 +113,17 @@ namespace UniConf {
       void load_parser() override;
       void save(std::optional<std::string> file_path=std::nullopt) override;
 
-      template <typename T> std::optional<T> get_as(const std::vector<std::string>& full_path) const {
-        std::shared_lock<std::shared_mutex> lock(m_RWMutex);
-        return get_as_impl<T>(full_path);
-      }
-
-      template <typename T> std::optional<T> get_as(const std::vector<std::string>& path, const std::string& key) const {
-        std::shared_lock<std::shared_mutex> lock(m_RWMutex);
-        Datatype::PathType full_path = path;
-        full_path.push_back(key);
-        return get_as_impl<T>(full_path);
-      }
-
-      std::optional<std::string> get_string(const std::vector<std::string>& full_path) const override;
-      std::optional<std::string> get_string(const std::vector<std::string>& path, const std::string& key) const override;
-
-      std::optional<std::int8_t> get_int8(const std::vector<std::string>& full_path) const override;
-      std::optional<std::int8_t> get_int8(const std::vector<std::string>& path, const std::string& key) const override;
-      std::optional<std::uint8_t> get_uint8(const std::vector<std::string>& full_path) const override;
-      std::optional<std::uint8_t> get_uint8(const std::vector<std::string>& path, const std::string& key) const override;
-
-      std::optional<std::int16_t> get_int16(const std::vector<std::string>& full_path) const override;
-      std::optional<std::int16_t> get_int16(const std::vector<std::string>& path, const std::string& key) const override;
-      std::optional<std::uint16_t> get_uint16(const std::vector<std::string>& full_path) const override;
-      std::optional<std::uint16_t> get_uint16(const std::vector<std::string>& path, const std::string& key) const override;
-
-      std::optional<std::int32_t> get_int32(const std::vector<std::string>& full_path) const override;
-      std::optional<std::int32_t> get_int32(const std::vector<std::string>& path, const std::string& key) const override;
-      std::optional<std::uint32_t> get_uint32(const std::vector<std::string>& full_path) const override;
-      std::optional<std::uint32_t> get_uint32(const std::vector<std::string>& path, const std::string& key) const override;
-
-      std::optional<std::int64_t> get_int64(const std::vector<std::string>& full_path) const override;
-      std::optional<std::int64_t> get_int64(const std::vector<std::string>& path, const std::string& key) const override;
-      std::optional<std::uint64_t> get_uint64(const std::vector<std::string>& full_path) const override;
-      std::optional<std::uint64_t> get_uint64(const std::vector<std::string>& path, const std::string& key) const override;
-
-      std::optional<std::float_t> get_float32(const std::vector<std::string>& full_path) const override;
-      std::optional<std::float_t> get_float32(const std::vector<std::string>& path, const std::string& key) const override;
-      std::optional<std::double_t> get_float64(const std::vector<std::string>& full_path) const override;
-      std::optional<std::double_t> get_float64(const std::vector<std::string>& path, const std::string& key) const override;
-
-      std::optional<bool> get_bool(const std::vector<std::string>& full_path) const override;
-      std::optional<bool> get_bool(const std::vector<std::string>& path, const std::string& key) const override;
-
       bool path_exists(const std::vector<std::string>& path) const override;
       void create_table(const std::vector<std::string>& path) override;
 
-      template<typename T> void set_as(const std::vector<std::string>& full_path, const T& value) {
-        std::unique_lock<std::shared_mutex> lock(m_RWMutex);
-        set_as_impl(full_path, value);
-      }
+      GET_AS();
+      GET_ALL_DECLARATIONS();
 
-      template<typename T> void set_as(const std::vector<std::string>& path, const std::string& key, const T& value) {
-        std::unique_lock<std::shared_mutex> lock(m_RWMutex);
-        Datatype::PathType full_path = path;
-        full_path.push_back(key);
-        set_as_impl(full_path, value);
-      }
+      SET_AS();
+      SET_ALL_DECLARATIONS();
 
-      void set_string(const std::vector<std::string>& full_path, const std::string& value) override;
-      void set_int8(const std::vector<std::string>& full_path, std::int8_t value) override;
-      void set_uint8(const std::vector<std::string>& full_path, std::uint8_t value) override;
-      void set_int16(const std::vector<std::string>& full_path, std::int16_t value) override;
-      void set_uint16(const std::vector<std::string>& full_path, std::uint16_t value) override;
-      void set_int32(const std::vector<std::string>& full_path, std::int32_t value) override;
-      void set_uint32(const std::vector<std::string>& full_path, std::uint32_t value) override;
-      void set_int64(const std::vector<std::string>& full_path, std::int64_t value) override;
-      void set_uint64(const std::vector<std::string>& full_path, std::uint64_t value) override;
-      void set_float32(const std::vector<std::string>& full_path, std::float_t value) override;
-      void set_float64(const std::vector<std::string>& full_path, std::double_t value) override;
-      void set_bool(const std::vector<std::string>& full_path, bool value) override;
-
-      void set_string(const std::vector<std::string>& path, const std::string& key, const std::string& value) override;
-      void set_int8(const std::vector<std::string>& path, const std::string& key, std::int8_t value) override;
-      void set_uint8(const std::vector<std::string>& path, const std::string& key, std::uint8_t value) override;
-      void set_int16(const std::vector<std::string>& path, const std::string& key, std::int16_t value) override;
-      void set_uint16(const std::vector<std::string>& path, const std::string& key, std::uint16_t value) override;
-      void set_int32(const std::vector<std::string>& path, const std::string& key, std::int32_t value) override;
-      void set_uint32(const std::vector<std::string>& path, const std::string& key, std::uint32_t value) override;
-      void set_int64(const std::vector<std::string>& path, const std::string& key, std::int64_t value) override;
-      void set_uint64(const std::vector<std::string>& path, const std::string& key, std::uint64_t value) override;
-      void set_float32(const std::vector<std::string>& path, const std::string& key, std::float_t value) override;
-      void set_float64(const std::vector<std::string>& path, const std::string& key, std::double_t value) override;
-      void set_bool(const std::vector<std::string>& path, const std::string& key, bool value) override;
-
-
-      template<typename T> void set_or_create_as(const std::vector<std::string>& full_path, const T& value) {
-        std::unique_lock<std::shared_mutex> lock(m_RWMutex);
-        set_or_create_as_impl(full_path, value);
-      }
-
-      template<typename T> void set_or_create_as(const std::vector<std::string>& path, const std::string& key, const T& value) {
-        std::unique_lock<std::shared_mutex> lock(m_RWMutex);
-        Datatype::PathType full_path = path;
-        full_path.push_back(key);
-        set_or_create_as_impl(full_path, value);
-      }
-
-      void set_or_create_string(const std::vector<std::string>& full_path, const std::string& value) override;
-      void set_or_create_int8(const std::vector<std::string>& full_path, std::int8_t value) override;
-      void set_or_create_uint8(const std::vector<std::string>& full_path, std::uint8_t value) override;
-      void set_or_create_int16(const std::vector<std::string>& full_path, std::int16_t value) override;
-      void set_or_create_uint16(const std::vector<std::string>& full_path, std::uint16_t value) override;
-      void set_or_create_int32(const std::vector<std::string>& full_path, std::int32_t value) override;
-      void set_or_create_uint32(const std::vector<std::string>& full_path, std::uint32_t value) override;
-      void set_or_create_int64(const std::vector<std::string>& full_path, std::int64_t value) override;
-      void set_or_create_uint64(const std::vector<std::string>& full_path, std::uint64_t value) override;
-      void set_or_create_float32(const std::vector<std::string>& full_path, std::float_t value) override;
-      void set_or_create_float64(const std::vector<std::string>& full_path, std::double_t value) override;
-      void set_or_create_bool(const std::vector<std::string>& full_path, bool value) override;
-
-      void set_or_create_string(const std::vector<std::string>& path, const std::string& key, const std::string& value) override;
-      void set_or_create_int8(const std::vector<std::string>& path, const std::string& key, std::int8_t value) override;
-      void set_or_create_uint8(const std::vector<std::string>& path, const std::string& key, std::uint8_t value) override;
-      void set_or_create_int16(const std::vector<std::string>& path, const std::string& key, std::int16_t value) override;
-      void set_or_create_uint16(const std::vector<std::string>& path, const std::string& key, std::uint16_t value) override;
-      void set_or_create_int32(const std::vector<std::string>& path, const std::string& key, std::int32_t value) override;
-      void set_or_create_uint32(const std::vector<std::string>& path, const std::string& key, std::uint32_t value) override;
-      void set_or_create_int64(const std::vector<std::string>& path, const std::string& key, std::int64_t value) override;
-      void set_or_create_uint64(const std::vector<std::string>& path, const std::string& key, std::uint64_t value) override;
-      void set_or_create_float32(const std::vector<std::string>& path, const std::string& key, std::float_t value) override;
-      void set_or_create_float64(const std::vector<std::string>& path, const std::string& key, std::double_t value) override;
-      void set_or_create_bool(const std::vector<std::string>& path, const std::string& key, bool value) override;
+      SET_OR_CREATE_AS();
+      SET_OR_CREATE_ALL_DECLARATIONS();
     };
   }
 }

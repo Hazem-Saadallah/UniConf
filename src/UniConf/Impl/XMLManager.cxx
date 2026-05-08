@@ -1,11 +1,12 @@
-#include <format>
 #include <mutex>
-#include <shared_mutex>
+#include <vector>
+#include <format>
 #include <string>
 #include <optional>
+#include <shared_mutex>
 #include <UniConf/Impl/Util/Misc.hxx>
 #include <UniConf/Impl/XMLManager.hxx>
-#include <vector>
+#include <UniConf/Impl/Util/Macro.hxx>
 
 UniConf::Impl::XMLManager::XMLManager(const std::string& file_path) : UniConf::Impl::BaseManager(file_path) {
   load(file_path);
@@ -35,93 +36,10 @@ std::optional<pugi::xml_node> UniConf::Impl::XMLManager::navigate_parents(std::s
   return current;
 }
 
-std::optional<std::string> UniConf::Impl::XMLManager::get_string(const std::vector<std::string>& full_path) const { return get_as<std::string>(full_path); }
-std::optional<std::string> UniConf::Impl::XMLManager::get_string(const std::vector<std::string>& path, const std::string& key) const { return get_as<std::string>(path, key); }
-
-std::optional<std::int8_t> UniConf::Impl::XMLManager::get_int8(const std::vector<std::string>& full_path) const { return get_as<std::int8_t>(full_path); }
-std::optional<std::int8_t> UniConf::Impl::XMLManager::get_int8(const std::vector<std::string>& path, const std::string& key) const { return get_as<std::int8_t>(path, key); }
-
-std::optional<std::uint8_t> UniConf::Impl::XMLManager::get_uint8(const std::vector<std::string>& full_path) const { return get_as<std::uint8_t>(full_path); }
-std::optional<std::uint8_t> UniConf::Impl::XMLManager::get_uint8(const std::vector<std::string>& path, const std::string& key) const { return get_as<std::uint8_t>(path, key); }
-
-std::optional<std::int16_t> UniConf::Impl::XMLManager::get_int16(const std::vector<std::string>& full_path) const { return get_as<std::int16_t>(full_path); }
-std::optional<std::int16_t> UniConf::Impl::XMLManager::get_int16(const std::vector<std::string>& path, const std::string& key) const { return get_as<std::int16_t>(path, key); }
-
-std::optional<std::uint16_t> UniConf::Impl::XMLManager::get_uint16(const std::vector<std::string>& full_path) const { return get_as<std::uint16_t>(full_path); }
-std::optional<std::uint16_t> UniConf::Impl::XMLManager::get_uint16(const std::vector<std::string>& path, const std::string& key) const { return get_as<std::uint16_t>(path, key); }
-
-std::optional<std::int32_t> UniConf::Impl::XMLManager::get_int32(const std::vector<std::string>& full_path) const { return get_as<std::int32_t>(full_path); }
-std::optional<std::int32_t> UniConf::Impl::XMLManager::get_int32(const std::vector<std::string>& path, const std::string& key) const { return get_as<std::int32_t>(path, key); }
-
-std::optional<std::uint32_t> UniConf::Impl::XMLManager::get_uint32(const std::vector<std::string>& full_path) const { return get_as<std::uint32_t>(full_path); }
-std::optional<std::uint32_t> UniConf::Impl::XMLManager::get_uint32(const std::vector<std::string>& path, const std::string& key) const { return get_as<std::uint32_t>(path, key); }
-
-std::optional<std::int64_t> UniConf::Impl::XMLManager::get_int64(const std::vector<std::string>& full_path) const { return get_as<std::int64_t>(full_path); }
-std::optional<std::int64_t> UniConf::Impl::XMLManager::get_int64(const std::vector<std::string>& path, const std::string& key) const { return get_as<std::int64_t>(path, key); }
-
-std::optional<std::uint64_t> UniConf::Impl::XMLManager::get_uint64(const std::vector<std::string>& full_path) const { return get_as<std::uint64_t>(full_path); }
-std::optional<std::uint64_t> UniConf::Impl::XMLManager::get_uint64(const std::vector<std::string>& path, const std::string& key) const { return get_as<std::uint64_t>(path, key); }
-
-std::optional<std::float_t> UniConf::Impl::XMLManager::get_float32(const std::vector<std::string>& full_path) const { return get_as<std::float_t>(full_path); }
-std::optional<std::float_t> UniConf::Impl::XMLManager::get_float32(const std::vector<std::string>& path, const std::string& key) const { return get_as<std::float_t>(path, key); }
-
-std::optional<std::double_t> UniConf::Impl::XMLManager::get_float64(const std::vector<std::string>& full_path) const { return get_as<std::double_t>(full_path); }
-std::optional<std::double_t> UniConf::Impl::XMLManager::get_float64(const std::vector<std::string>& path, const std::string& key) const { return get_as<double_t>(path, key); }
-
-std::optional<bool> UniConf::Impl::XMLManager::get_bool(const std::vector<std::string>& full_path) const { return get_as<bool>(full_path); }
-std::optional<bool> UniConf::Impl::XMLManager::get_bool(const std::vector<std::string>& path, const std::string& key) const { return get_as<bool>(path, key); }
 
 bool UniConf::Impl::XMLManager::path_exists(const std::vector<std::string>& path) const { return navigate_parents(path, false) != std::nullopt; }
 void UniConf::Impl::XMLManager::create_table(const std::vector<std::string>& path) { navigate_parents(path, true); }
 
-void UniConf::Impl::XMLManager::set_string(const std::vector<std::string>& full_path, const std::string& value) { set_as<std::string>(full_path, value); }
-void UniConf::Impl::XMLManager::set_int8(const std::vector<std::string>& full_path, std::int8_t value) { set_as<std::int8_t>(full_path, value); }
-void UniConf::Impl::XMLManager::set_uint8(const std::vector<std::string>& full_path, std::uint8_t value) { set_as<std::uint8_t>(full_path, value); }
-void UniConf::Impl::XMLManager::set_int16(const std::vector<std::string>& full_path, std::int16_t value) { set_as<std::int16_t>(full_path, value); }
-void UniConf::Impl::XMLManager::set_uint16(const std::vector<std::string>& full_path, std::uint16_t value) { set_as<std::uint16_t>(full_path, value); }
-void UniConf::Impl::XMLManager::set_int32(const std::vector<std::string>& full_path, std::int32_t value) { set_as<std::int32_t>(full_path, value); }
-void UniConf::Impl::XMLManager::set_uint32(const std::vector<std::string>& full_path, std::uint32_t value) { set_as<std::uint32_t>(full_path, value); }
-void UniConf::Impl::XMLManager::set_int64(const std::vector<std::string>& full_path, std::int64_t value) { set_as<std::int64_t>(full_path, value); }
-void UniConf::Impl::XMLManager::set_uint64(const std::vector<std::string>& full_path, std::uint64_t value) { set_as<std::uint64_t>(full_path, value); }
-void UniConf::Impl::XMLManager::set_float32(const std::vector<std::string>& full_path, std::float_t value) { set_as<std::float_t>(full_path, value); }
-void UniConf::Impl::XMLManager::set_float64(const std::vector<std::string>& full_path, std::double_t value) { set_as<std::double_t>(full_path, value); }
-void UniConf::Impl::XMLManager::set_bool(const std::vector<std::string>& full_path, bool value) { set_as<bool>(full_path, value); }
-
-void UniConf::Impl::XMLManager::set_string(const std::vector<std::string>& path, const std::string& key, const std::string& value) { set_as<std::string>(path, key, value); }
-void UniConf::Impl::XMLManager::set_int8(const std::vector<std::string>& path, const std::string& key, std::int8_t value) { set_as<std::int8_t>(path, key, value); }
-void UniConf::Impl::XMLManager::set_uint8(const std::vector<std::string>& path, const std::string& key, std::uint8_t value) { set_as<std::uint8_t>(path, key, value); }
-void UniConf::Impl::XMLManager::set_int16(const std::vector<std::string>& path, const std::string& key, std::int16_t value) { set_as<std::int16_t>(path, key, value); }
-void UniConf::Impl::XMLManager::set_uint16(const std::vector<std::string>& path, const std::string& key, std::uint16_t value) { set_as<std::uint16_t>(path, key, value); }
-void UniConf::Impl::XMLManager::set_int32(const std::vector<std::string>& path, const std::string& key, std::int32_t value) { set_as<std::int32_t>(path, key, value); }
-void UniConf::Impl::XMLManager::set_uint32(const std::vector<std::string>& path, const std::string& key, std::uint32_t value) { set_as<std::uint32_t>(path, key, value); }
-void UniConf::Impl::XMLManager::set_int64(const std::vector<std::string>& path, const std::string& key, std::int64_t value) { set_as<std::int64_t>(path, key, value); }
-void UniConf::Impl::XMLManager::set_uint64(const std::vector<std::string>& path, const std::string& key, std::uint64_t value) { set_as<std::uint64_t>(path, key, value); }
-void UniConf::Impl::XMLManager::set_float32(const std::vector<std::string>& path, const std::string& key, std::float_t value) { set_as<std::float_t>(path, key, value); }
-void UniConf::Impl::XMLManager::set_float64(const std::vector<std::string>& path, const std::string& key, std::double_t value) { set_as<std::double_t>(path, key, value); }
-void UniConf::Impl::XMLManager::set_bool(const std::vector<std::string>& path, const std::string& key, bool value) { set_as<bool>(path, key, value); }
-
-void UniConf::Impl::XMLManager::set_or_create_string(const std::vector<std::string>& full_path, const std::string& value) { set_or_create_as<std::string>(full_path, value); }
-void UniConf::Impl::XMLManager::set_or_create_int8(const std::vector<std::string>& full_path, std::int8_t value) { set_or_create_as<std::int8_t>(full_path, value); }
-void UniConf::Impl::XMLManager::set_or_create_uint8(const std::vector<std::string>& full_path, std::uint8_t value) { set_or_create_as<std::uint8_t>(full_path, value); }
-void UniConf::Impl::XMLManager::set_or_create_int16(const std::vector<std::string>& full_path, std::int16_t value) { set_or_create_as<std::int16_t>(full_path, value); }
-void UniConf::Impl::XMLManager::set_or_create_uint16(const std::vector<std::string>& full_path, std::uint16_t value) { set_or_create_as<std::uint16_t>(full_path, value); }
-void UniConf::Impl::XMLManager::set_or_create_int32(const std::vector<std::string>& full_path, std::int32_t value) { set_or_create_as<std::int32_t>(full_path, value); }
-void UniConf::Impl::XMLManager::set_or_create_uint32(const std::vector<std::string>& full_path, std::uint32_t value) { set_or_create_as<std::uint32_t>(full_path, value); }
-void UniConf::Impl::XMLManager::set_or_create_int64(const std::vector<std::string>& full_path, std::int64_t value) { set_or_create_as<std::int64_t>(full_path, value); }
-void UniConf::Impl::XMLManager::set_or_create_uint64(const std::vector<std::string>& full_path, std::uint64_t value) { set_or_create_as<std::uint64_t>(full_path, value); }
-void UniConf::Impl::XMLManager::set_or_create_float32(const std::vector<std::string>& full_path, std::float_t value) { set_or_create_as<std::float_t>(full_path, value); }
-void UniConf::Impl::XMLManager::set_or_create_float64(const std::vector<std::string>& full_path, std::double_t value) { set_or_create_as<std::double_t>(full_path, value); }
-void UniConf::Impl::XMLManager::set_or_create_bool(const std::vector<std::string>& full_path, bool value) { set_or_create_as<bool>(full_path, value); }
-
-void UniConf::Impl::XMLManager::set_or_create_string(const std::vector<std::string>& path, const std::string& key, const std::string& value) { set_or_create_as<std::string>(path, key, value); }
-void UniConf::Impl::XMLManager::set_or_create_int8(const std::vector<std::string>& path, const std::string& key, std::int8_t value) { set_or_create_as<std::int8_t>(path, key, value); }
-void UniConf::Impl::XMLManager::set_or_create_uint8(const std::vector<std::string>& path, const std::string& key, std::uint8_t value) { set_or_create_as<std::uint8_t>(path, key, value); }
-void UniConf::Impl::XMLManager::set_or_create_int16(const std::vector<std::string>& path, const std::string& key, std::int16_t value) { set_or_create_as<std::int16_t>(path, key, value); }
-void UniConf::Impl::XMLManager::set_or_create_uint16(const std::vector<std::string>& path, const std::string& key, std::uint16_t value) { set_or_create_as<std::uint16_t>(path, key, value); }
-void UniConf::Impl::XMLManager::set_or_create_int32(const std::vector<std::string>& path, const std::string& key, std::int32_t value) { set_or_create_as<std::int32_t>(path, key, value); }
-void UniConf::Impl::XMLManager::set_or_create_uint32(const std::vector<std::string>& path, const std::string& key, std::uint32_t value) { set_or_create_as<std::uint32_t>(path, key, value); }
-void UniConf::Impl::XMLManager::set_or_create_int64(const std::vector<std::string>& path, const std::string& key, std::int64_t value) { set_or_create_as<std::int64_t>(path, key, value); }
-void UniConf::Impl::XMLManager::set_or_create_uint64(const std::vector<std::string>& path, const std::string& key, std::uint64_t value) { set_or_create_as<std::uint64_t>(path, key, value); }
-void UniConf::Impl::XMLManager::set_or_create_float32(const std::vector<std::string>& path, const std::string& key, std::float_t value) { set_or_create_as<std::float_t>(path, key, value); }
-void UniConf::Impl::XMLManager::set_or_create_float64(const std::vector<std::string>& path, const std::string& key, std::double_t value) { set_or_create_as<std::double_t>(path, key, value); }
-void UniConf::Impl::XMLManager::set_or_create_bool(const std::vector<std::string>& path, const std::string& key, bool value) { set_or_create_as<bool>(path, key, value); }
+GET_ALL_DEFINITION(UniConf::Impl::XMLManager);
+SET_ALL_DEFINITION(UniConf::Impl::XMLManager);
+SET_OR_CREATE_ALL_DEFINITION(UniConf::Impl::XMLManager);

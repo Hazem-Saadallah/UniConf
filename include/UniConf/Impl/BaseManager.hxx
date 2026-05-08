@@ -75,7 +75,7 @@ namespace UniConf {
       template<typename T> void set_as(const std::vector<std::string>& full_path, const T& value);
       template<typename T> void set_as(const std::vector<std::string>& path, const std::string& key, const T& value);
 
-      virtual void set_string(const std::vector<std::string>& full_path, const std::string& value) = 0;
+      virtual void set_string(const std::vector<std::string>& full_path, std::string value) = 0;
       virtual void set_int8(const std::vector<std::string>& full_path, std::int8_t value) = 0;
       virtual void set_uint8(const std::vector<std::string>& full_path, std::uint8_t value) = 0;
       virtual void set_int16(const std::vector<std::string>& full_path, std::int16_t value) = 0;
@@ -88,7 +88,7 @@ namespace UniConf {
       virtual void set_float64(const std::vector<std::string>& full_path, std::double_t value) = 0;
       virtual void set_bool(const std::vector<std::string>& full_path, bool value) = 0;
 
-      virtual void set_string(const std::vector<std::string>& path, const std::string& key, const std::string& value) = 0;
+      virtual void set_string(const std::vector<std::string>& path, const std::string& key, std::string value) = 0;
       virtual void set_int8(const std::vector<std::string>& path, const std::string& key, std::int8_t value) = 0;
       virtual void set_uint8(const std::vector<std::string>& path, const std::string& key, std::uint8_t value) = 0;
       virtual void set_int16(const std::vector<std::string>& path, const std::string& key, std::int16_t value) = 0;
@@ -104,7 +104,7 @@ namespace UniConf {
       template<typename T> void set_or_create_as(const std::vector<std::string>& full_path, const T& value);
       template<typename T> void set_or_create_as(const std::vector<std::string>& path, const std::string& key, const T& value);
 
-      virtual void set_or_create_string(const std::vector<std::string>& full_path, const std::string& value) = 0;
+      virtual void set_or_create_string(const std::vector<std::string>& full_path, std::string value) = 0;
       virtual void set_or_create_int8(const std::vector<std::string>& full_path, std::int8_t value) = 0;
       virtual void set_or_create_uint8(const std::vector<std::string>& full_path, std::uint8_t value) = 0;
       virtual void set_or_create_int16(const std::vector<std::string>& full_path, std::int16_t value) = 0;
@@ -117,7 +117,7 @@ namespace UniConf {
       virtual void set_or_create_float64(const std::vector<std::string>& full_path, std::double_t value) = 0;
       virtual void set_or_create_bool(const std::vector<std::string>& full_path, bool value) = 0;
 
-      virtual void set_or_create_string(const std::vector<std::string>& path, const std::string& key, const std::string& value) = 0;
+      virtual void set_or_create_string(const std::vector<std::string>& path, const std::string& key, std::string value) = 0;
       virtual void set_or_create_int8(const std::vector<std::string>& path, const std::string& key, std::int8_t value) = 0;
       virtual void set_or_create_uint8(const std::vector<std::string>& path, const std::string& key, std::uint8_t value) = 0;
       virtual void set_or_create_int16(const std::vector<std::string>& path, const std::string& key, std::int16_t value) = 0;
