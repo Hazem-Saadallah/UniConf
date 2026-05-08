@@ -15,7 +15,10 @@ void UniConf::Impl::TomlManager::load_parser() {
   m_Table = toml::parse_file(m_ConfigPath);
 }
 
-void UniConf::Impl::TomlManager::save(std::optional<std::string> file_path) { std::ofstream(file_path.value_or(m_ConfigPath)) << m_Table; }
+void UniConf::Impl::TomlManager::save(std::optional<std::string> file_path) {
+  std::unique_lock<std::shared_mutex> lock(m_RWMutex);
+  std::ofstream(file_path.value_or(m_ConfigPath)) << m_Table;
+}
 
 std::optional<std::string> UniConf::Impl::TomlManager::get_string(const std::vector<std::string>& full_path) const { return get_as<std::string>(full_path); }
 std::optional<std::string> UniConf::Impl::TomlManager::get_string(const std::vector<std::string>& path, const std::string& key) const { return get_as<std::string>(path, key); }

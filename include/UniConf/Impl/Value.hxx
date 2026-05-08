@@ -37,6 +37,10 @@ namespace UniConf {
         std::unique_lock<std::shared_mutex> lock(m_RWMutex);
         m_Config->set_as<ValueType>(m_Path, value);
       }
+      void set_or_create_value(ValueType value) {
+        std::unique_lock<std::shared_mutex> lock(m_RWMutex);
+        m_Config->set_or_create_as<ValueType>(m_Path, value);
+      }
 
       ValueType get_default() const {
         std::shared_lock<std::shared_mutex> lock(m_RWMutex);

@@ -18,7 +18,21 @@ namespace UniConf {
     toml::table m_Table;
 
 
+
   private:
+    template<typename T> inline std::optional<T> get_as_impl(const std::vector<std::string>& full_path) const {
+      if(full_path.empty()) return std::nullopt;
+      const toml::table *current = &m_Table;
+      for(std::size_t i{0}; i < full_path.size()-1; ++i) {
+        const std::string& path_part = full_path[i];
+        const toml::node* next_node = current->get(path_part);
+        if(!next_node || !next_node->is_table()) return std::nullopt;
+        current = next_node->as_table();
+      }
+      if(!current->get(full_path.back())) return std::nullopt;
+      return current->get(full_path.back())->value<T>();
+    }
+
     template <typename T> inline void set_as_impl(const std::vector<std::string>& full_path, T value) {
       toml::table *current = &m_Table;
       for(std::size_t i{0}; i < full_path.size()-1; ++i) {
@@ -54,23 +68,14 @@ namespace UniConf {
 
     template<typename T> inline std::optional<T> get_as(const std::vector<std::string>& full_path) const {
       std::shared_lock<std::shared_mutex> lock(m_RWMutex);
-      if(full_path.empty()) return std::nullopt;
-      const toml::table *current = &m_Table;
-      for(std::size_t i{0}; i < full_path.size()-1; ++i) {
-        const std::string& path_part = full_path[i];
-        const toml::node* next_node = current->get(path_part);
-        if(!next_node || !next_node->is_table()) return std::nullopt;
-        current = next_node->as_table();
-      }
-      if(!current->get(full_path.back())) return std::nullopt;
-      return current->get(full_path.back())->value<T>();
+      return get_as_impl<T>(full_path);
     };
 
     template<typename T> inline std::optional<T> get_as(const std::vector<std::string>& path, const std::string& key) const {
       std::shared_lock<std::shared_mutex> lock(m_RWMutex);
       std::vector<std::string> vec = path;
       vec.push_back(key);
-      return get_as<T>(vec);
+      return get_as_impl<T>(vec);
     };
 
     std::optional<std::string> get_string(const std::vector<std::string>& full_path) const override;

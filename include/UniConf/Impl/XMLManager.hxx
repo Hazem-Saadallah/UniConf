@@ -1,6 +1,5 @@
 #pragma once
 
-#include "UniConf/Impl/datatypes.hxx"
 #include <mutex>
 #include <shared_mutex>
 #include <span>
@@ -8,6 +7,7 @@
 #include <vector>
 #include <concepts>
 #include <pugixml.hpp>
+#include <UniConf/Impl/datatypes.hxx>
 #include <UniConf/Impl/BaseManager.hxx>
 
 
@@ -47,6 +47,19 @@ namespace UniConf {
           }
         }
         else return std::nullopt;
+      }
+
+      template <typename T> std::optional<T> get_as_impl(const Datatype::PathType& full_path) const {
+        Datatype::PathType path = Datatype::PathType(full_path.begin(), full_path.end()-1);
+        std::string key = full_path.back();
+
+        if(key.empty()) return std::nullopt;
+        std::optional<pugi::xml_node> parent = navigate_parents(path, false);
+        if(!parent) return std::nullopt;
+        pugi::xpath_node target = parent->select_node(key.c_str());
+        if(target.attribute()) return extract_value<T, pugi::xml_attribute>(target.attribute());
+        else if (target.node()) return extract_value<T, pugi::xml_text>(target.node().text());
+        return std::nullopt;
       }
 
       template<typename T> void set_as_impl(const std::vector<std::string>& full_path, const T& value) {
@@ -101,19 +114,14 @@ namespace UniConf {
 
       template <typename T> std::optional<T> get_as(const std::vector<std::string>& full_path) const {
         std::shared_lock<std::shared_mutex> lock(m_RWMutex);
-        if(full_path.empty()) return std::nullopt;
-        return get_as<T>(std::vector<std::string>(full_path.begin(), full_path.end()-1), full_path.back());
+        return get_as_impl<T>(full_path);
       }
 
       template <typename T> std::optional<T> get_as(const std::vector<std::string>& path, const std::string& key) const {
         std::shared_lock<std::shared_mutex> lock(m_RWMutex);
-        if(key.empty()) return std::nullopt;
-        std::optional<pugi::xml_node> parent = navigate_parents(path, false);
-        if(!parent) return std::nullopt;
-        pugi::xpath_node target = parent->select_node(key.c_str());
-        if(target.attribute()) return extract_value<T, pugi::xml_attribute>(target.attribute());
-        else if (target.node()) return extract_value<T, pugi::xml_text>(target.node().text());
-        return std::nullopt;
+        Datatype::PathType full_path = path;
+        full_path.push_back(key);
+        return get_as_impl<T>(full_path);
       }
 
       std::optional<std::string> get_string(const std::vector<std::string>& full_path) const override;
