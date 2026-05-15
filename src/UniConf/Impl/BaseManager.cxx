@@ -2,7 +2,7 @@
 #include <filesystem>
 #include <UniConf/Impl/BaseManager.hxx>
 
-UniConf::Impl::BaseManager::BaseManager(const std::string& file_path) : m_ConfigPath(file_path) {}
+UniConf::Impl::BaseManager::BaseManager(const std::string& file_path) {}
 
 bool UniConf::Impl::BaseManager::is_initalized() const {
   std::shared_lock<std::shared_mutex> lock(m_RWMutex);

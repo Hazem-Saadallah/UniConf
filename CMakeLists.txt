@@ -14,12 +14,14 @@ set(SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/src/UniConf/Impl/BaseManager.cxx
   ${CMAKE_CURRENT_SOURCE_DIR}/src/UniConf/Impl/TomlManager.cxx
   ${CMAKE_CURRENT_SOURCE_DIR}/src/UniConf/Impl/XMLManager.cxx
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/UniConf/Impl/JSONManager.cxx
   ${CMAKE_CURRENT_SOURCE_DIR}/src/UniConf/Impl/Util/Misc.cxx
   ${CMAKE_CURRENT_SOURCE_DIR}/src/UniConf.cxx
 )
 set(COMMON_LIBS
   tomlplusplus::tomlplusplus
   pugixml
+  nlohmann_json
 )
 
 set(COMMON_INCLUDE_DIRS
@@ -41,8 +43,17 @@ FetchContent_Declare(
   SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/extern/pugixml
   BINARY_DIR ${CMAKE_BINARY_DIR}/extern/pugixml
 )
+
+FetchContent_Declare(
+  nlohmann_json
+  URL https://github.com/nlohmann/json/archive/refs/tags/v3.12.0.tar.gz
+  DOWNLOAD_EXTRACT_TIMESTAMP true
+  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/extern/nlohmann_json
+  BINARY_DIR ${CMAKE_BINARY_DIR}/extern/nlohmann_json
+)
 FetchContent_MakeAvailable(tomlplusplus)
 FetchContent_MakeAvailable(pugixml)
+FetchContent_MakeAvailable(nlohmann_json)
 
 add_library(${PROJECT_NAME} SHARED ${SOURCES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${COMMON_INCLUDE_DIRS})
