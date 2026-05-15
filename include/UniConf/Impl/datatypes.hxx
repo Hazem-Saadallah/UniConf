@@ -8,6 +8,7 @@ namespace UniConf {
     class BaseManager;
     class TomlManager;
     class XMLManager;
+    class JSONManager;
 
     namespace Datatype {
       enum class FileType {
@@ -22,6 +23,7 @@ namespace UniConf {
       typedef std::shared_ptr<BaseManager> Config;
       typedef std::shared_ptr<TomlManager> TomlConfig;
       typedef std::shared_ptr<XMLManager> XMLConfig;
+      typedef std::shared_ptr<JSONManager> JSONConfig;
       typedef std::vector<std::string> PathType;
     }
   }

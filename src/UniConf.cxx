@@ -7,17 +7,16 @@ UniConf::Impl::Datatype::Config UniConf::Create(const std::string& file_path, Im
       return UniConf::CreateTomlConfig(file_path);
       break;
 
-    case UniConf::Impl::Datatype::FileType::YAML: [[fallthrough]];
-    case UniConf::Impl::Datatype::FileType::YML:
-      [[fallthrough]];
-
     case UniConf::Impl::Datatype::FileType::JSON:
-      [[fallthrough]];
+      return UniConf::CreateJSONConfig(file_path);
+      break;
 
     case UniConf::Impl::Datatype::FileType::XML:
       return UniConf::CreateXMLConfig(file_path);
       break;
 
+    case UniConf::Impl::Datatype::FileType::YAML: [[fallthrough]];
+    case UniConf::Impl::Datatype::FileType::YML: [[fallthrough]];
     case UniConf::Impl::Datatype::FileType::GDBM:
       throw "NOT IMPLEMENTED YET";
 

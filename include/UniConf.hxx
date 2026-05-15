@@ -1,5 +1,6 @@
 #pragma once 
 
+#include <UniConf/Impl/JSONManager.hxx>
 #include <string>
 #include <memory>
 #include <UniConf/Impl/datatypes.hxx>
@@ -24,5 +25,9 @@ namespace UniConf {
 
   template<typename... T> inline UniConf::Impl::Datatype::XMLConfig CreateXMLConfig(T&&... args) {
     return std::make_unique<UniConf::Impl::XMLManager>(std::forward<T>(args)...);
+  }
+
+  template<typename... T> inline UniConf::Impl::Datatype::JSONConfig CreateJSONConfig(T&&... args) {
+    return std::make_unique<UniConf::Impl::JSONManager>(std::forward<T>(args)...);
   }
 };
